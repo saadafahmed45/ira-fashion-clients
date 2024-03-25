@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
 
 const CartPage = () => {
-  const { cartItems } = useContext(CartContext);
+  const { cartItems, removeFromCart } = useContext(CartContext);
   // Calculate subtotal
   const subtotal = cartItems.reduce((total, item) => total + item.price, 0);
 
@@ -13,13 +13,15 @@ const CartPage = () => {
 
   // Calculate total price including shipping
   const totalPrice = subtotal + shippingCost + tax;
+
+  
   return (
-    <div className="h-full px-24 overflow-hidden">
-      <div className="font-[sans-serif] bg-white">
+    <div className="h-full   px-24 py-8 overflow-hidden">
+      <div className="font-[sans-serif] bg-white ">
         <div className="lg:max-w-7xl max-w-xl mx-auto">
           <h2 className="text-3xl font-extrabold text-[#333]">Shopping Cart</h2>
           <div className="grid lg:grid-cols-3 gap-8 items-start mt-8">
-            <div className="divide-y lg:col-span-2">
+            <div className="divide-y lg:col-span-2 ">
               {/* hareeeee  */}
               {cartItems.map((item) => (
                 <div className="flex items-start justify-between gap-4 py-8">
@@ -67,50 +69,59 @@ const CartPage = () => {
                       </div>
                     </div>
                   </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 fill-red-500 inline cursor-pointer"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                      data-original="#000000"></path>
-                    <path
-                      d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                      data-original="#000000"></path>
-                  </svg>
+                  <button onClick={() => removeFromCart(item.id)}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 fill-red-500 inline cursor-pointer"
+                      viewBox="0 0 24 24">
+                      <path
+                        d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                        data-original="#000000"></path>
+                      <path
+                        d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                        data-original="#000000"></path>
+                    </svg>
+                  </button>
                 </div>
               ))}
               {/* hareee */}
             </div>
-            <div className="bg-gray-100 p-8">
-              <h3 className="text-2xl font-bold text-[#333]">Order summary</h3>
-              <ul className="text-[#333] mt-6 divide-y">
-                <li className="flex flex-wrap gap-4 text-md py-3">
-                  Subtotal{" "}
-                  <span className="ml-auto font-bold">
-                    ${subtotal.toFixed(2)}
-                  </span>
-                </li>
-                <li className="flex flex-wrap gap-4 text-md py-3">
-                  Shipping{" "}
-                  <span className="ml-auto font-bold">
-                    ${shippingCost.toFixed(2)}
-                  </span>
-                </li>
-                <li className="flex flex-wrap gap-4 text-md py-3">
-                  Tax{" "}
-                  <span className="ml-auto font-bold">${tax.toFixed(2)}</span>
-                </li>
-                <li className="flex flex-wrap gap-4 text-md py-3 font-bold">
-                  Total <span className="ml-auto">${totalPrice}</span>
-                </li>
-              </ul>
-              <button
-                type="button"
-                className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded">
-                Check out
-              </button>
-            </div>
+
+            {cartItems.length == 0 ? (
+              <h1>cart is empty</h1>
+            ) : (
+              <div className="bg-gray-100 p-8">
+                <h3 className="text-2xl font-bold text-[#333]">
+                  Order summary
+                </h3>
+                <ul className="text-[#333] mt-6 divide-y">
+                  <li className="flex flex-wrap gap-4 text-md py-3">
+                    Subtotal{" "}
+                    <span className="ml-auto font-bold">
+                      ${subtotal.toFixed(2)}
+                    </span>
+                  </li>
+                  <li className="flex flex-wrap gap-4 text-md py-3">
+                    Shipping{" "}
+                    <span className="ml-auto font-bold">
+                      ${shippingCost.toFixed(2)}
+                    </span>
+                  </li>
+                  <li className="flex flex-wrap gap-4 text-md py-3">
+                    Tax{" "}
+                    <span className="ml-auto font-bold">${tax.toFixed(2)}</span>
+                  </li>
+                  <li className="flex flex-wrap gap-4 text-md py-3 font-bold">
+                    Total <span className="ml-auto">${totalPrice}</span>
+                  </li>
+                </ul>
+                <button
+                  type="button"
+                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded">
+                  Check out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

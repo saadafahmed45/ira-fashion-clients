@@ -5,11 +5,11 @@ import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
 
 const Navbar = () => {
-  const { cartItems } = useContext(CartContext);
+  const { cartItems, user } = useContext(CartContext);
   const subTotal = cartItems.reduce((total, item) => total + item.price, 0);
 
   return (
-    <div className=" ">
+    <div className="overflow-hidden ">
       <div className="navbar fixed bg-base-300  md:px-24">
         <div className="navbar-start">
           <Link href={"/"} className="btn btn-ghost text-xl">
@@ -20,6 +20,9 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1">
             <li>
               <a>Shop</a>
+            </li>
+            <li>
+              <Link href={"/login"}> Login</Link>
             </li>
             <li>
               <details>
@@ -85,10 +88,7 @@ const Navbar = () => {
               role="button"
               className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                />
+                <img alt={user.displayName} src={user.photoURL} />
               </div>
             </div>
             <ul
