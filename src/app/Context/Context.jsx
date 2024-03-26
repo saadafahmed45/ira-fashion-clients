@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from "react";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import { app } from "../firebase/firebase.init";
+import { toast } from "react-toastify";
 
 export const CartContext = createContext([]);
 
@@ -26,6 +27,16 @@ const ContextProvider = ({ children }) => {
     }
     setCartItems(copyCartItems);
     localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
+    toast.success("Product added to cart", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   }
 
   // remove to cart
@@ -35,6 +46,16 @@ const ContextProvider = ({ children }) => {
     copyCartItems = copyCartItems.filter((item) => item.id !== getCurrentItem);
     setCartItems(copyCartItems);
     localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
+    toast.warn("Product Removed to cart", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   }
   // localStorage save
   useEffect(() => {
@@ -60,8 +81,16 @@ const ContextProvider = ({ children }) => {
         setUser(user);
         // console.log(displayName);
         localStorage.setItem("user", JSON.stringify(user));
-
-        alert("sign In");
+        toast.success("You are logged In", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       })
       .catch((error) => {
         // Handle Errors here.
@@ -82,7 +111,16 @@ const ContextProvider = ({ children }) => {
         setUser("");
         localStorage.setItem("user", JSON.stringify(""));
 
-        alert("sign out");
+        toast.warn("You are logout", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       })
       .catch((error) => {
         // An error happened.

@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ContextProvider from "./Context/Context";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +21,8 @@ export default function RootLayout({ children }) {
         <ContextProvider>
           <Navbar />
           {children}
+          <ToastContainer />
+
           <Footer />
         </ContextProvider>
         <SpeedInsights />

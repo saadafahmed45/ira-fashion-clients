@@ -1,9 +1,10 @@
 "use client";
 import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
+import { redirect } from "next/navigation";
 
 const CartPage = () => {
-  const { cartItems, removeFromCart } = useContext(CartContext);
+  const { cartItems, removeFromCart, user } = useContext(CartContext);
   // Calculate subtotal
   const subtotal = cartItems.reduce((total, item) => total + item.price, 0);
 
@@ -14,19 +15,27 @@ const CartPage = () => {
   // Calculate total price including shipping
   const totalPrice = subtotal + shippingCost + tax;
 
-  
+  const myUser = user.emailVerified;
+  // set privet route
+  // const emailVerified = myUser;
+  if (!myUser) {
+    redirect("/login");
+  }
+
   return (
     <div className="h-full   px-24 py-8 overflow-hidden">
       <div className="font-[sans-serif] bg-white ">
         <div className="lg:max-w-7xl max-w-xl mx-auto">
-          <h2 className="text-3xl font-extrabold text-[#333]">Shopping Cart</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#333]">
+            Shopping Cart
+          </h2>
           <div className="grid lg:grid-cols-3 gap-8 items-start mt-8">
             <div className="divide-y lg:col-span-2 ">
               {/* hareeeee  */}
               {cartItems.map((item) => (
-                <div className="flex items-start justify-between gap-4 py-8">
-                  <div className="flex gap-6">
-                    <div className="h-64 bg-gray-100 p-6 rounded">
+                <div className="flex flex-col md:flex-row items-start justify-between gap-4 py-8">
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className=" h-40 md:h-64 bg-gray-100 p-2  md:p-6 rounded">
                       <img
                         src={item.img}
                         className="w-full h-full object-contain shrink-0"
@@ -70,6 +79,7 @@ const CartPage = () => {
                     </div>
                   </div>
                   <button onClick={() => removeFromCart(item.id)}>
+                    <span className="m-2">Remove</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-5 fill-red-500 inline cursor-pointer"

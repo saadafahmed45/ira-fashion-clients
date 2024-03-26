@@ -2,13 +2,13 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <section className="h-screen w-[80%] md:w-[90%] flex items-center overflow-hidden">
+    <section className="h-[80vh] md:h-screen w-[80%] md:w-[90%] flex items-center overflow-hidden">
       {/* hero warper */}
       <div className="flex flex-col md:flex-row justify-between ">
         {/* hero content  */}
         <div className="md:flex-1 ">
           {/* hero content  text sec*/}
-          <h2>cart</h2>
+
           <div className="flex flex-col  gap-4  mt-8 md:w-[78%]">
             <h2 className="text-3xl md:text-4xl ">
               Unleash Your Style: Dive into Our Exclusive Collection Today!

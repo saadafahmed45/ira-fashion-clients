@@ -1,16 +1,22 @@
+"use client";
+import { CartContext } from "@/app/Context/Context";
 import { productData } from "@/app/api/productData";
-import React from "react";
+import Link from "next/link";
+import React, { useContext } from "react";
 
 const SingleProduct = ({ params }) => {
   const prID = params.id;
   const data = productData.products;
   const product = data.find((p) => p.id === parseInt(prID));
   const { id, name, img, price, description } = product;
+
+  const { handleCartAdded } = useContext(CartContext);
+
   return (
-    <div className="h-screen px-4  md:px-24 md:py-8 overflow-hidden flex">
+    <div className="h-[80vh] md:h-screen  px-2  md:px-24 md:py-8 flex">
       {/* warpper */}
       <div className=" flex items-center ">
-        <div className="shadow-xl h-[500px] md:h-[400px] w-[500px] md:w-full flex flex-col md:flex-row justify-around ">
+        <div className="shadow-xl h-[500px] md:h-[400px] w-[400px] md:w-full flex flex-col md:flex-row justify-around ">
           {/* img */}
           <div className="flex-2  ">
             <img
@@ -20,10 +26,17 @@ const SingleProduct = ({ params }) => {
             />
           </div>
           {/* content */}
-          <div className="flex-1 gap-2    m-8">
-            <h2 className="text-3xl">Name: {name}</h2>
-            <h2 className="text-2xl">Price: ${price}</h2>
-            <h2>Name: {description}</h2>
+          <div className="flex-1 flex flex-col gap-2  w-[80%]    m-8">
+            <h2 className="text-2xl"> {name}</h2>
+            <h2 className="text-xl md:text-2xl">Price: ${price}</h2>
+            <h2>Details: {description}</h2>
+            <div>
+              <button
+                className="mt-8 border-2 border-[#FF3EA5] bg-white text-[#FF3EA5]  hover:bg-[#FF3EA5] hover:text-white  py-1 px-2"
+                onClick={() => handleCartAdded(product)}>
+                Add to cart
+              </button>
+            </div>
           </div>
         </div>
       </div>
