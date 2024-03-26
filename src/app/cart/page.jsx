@@ -23,7 +23,7 @@ const CartPage = () => {
   }
 
   return (
-    <div className="h-full   px-24 py-8 overflow-hidden">
+    <div className="h-full flex  justify-center px-8 md:px-24 py-8 overflow-hidden">
       <div className="font-[sans-serif] bg-white ">
         <div className="lg:max-w-7xl max-w-xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#333]">
