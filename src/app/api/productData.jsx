@@ -34,4 +34,14 @@ export const productData = {
         "Vestibulum ut ligula eget magna cursus feugiat vel non enim. Suspendisse potenti. Cras porttitor ante vel magna eleifend, eu dignissim lectus maximus.",
     },
   ],
+  boys: [
+    {
+      id: 1,
+      name: "Blezer",
+      img: "/products/blezer.jpg",
+      price: 799.99,
+      description:
+        "Vestibulum ut ligula eget magna cursus feugiat vel non enim. Suspendisse potenti. Cras porttitor ante vel magna eleifend, eu dignissim lectus maximus.",
+    },
+  ],
 };

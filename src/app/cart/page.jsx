@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { CartContext } from "../Context/Context";
 import { redirect } from "next/navigation";
 
@@ -15,6 +15,25 @@ const CartPage = () => {
   // Calculate total price including shipping
   const totalPrice = subtotal + shippingCost + tax;
 
+  //  increase and decrease
+
+  const [quantity, setQuantity] = useState(1);
+  const { price } = cartItems;
+
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+    console.log("increase");
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+    console.log("decrease");
+  };
+  const totalIncreasePrice = (price * quantity).toFixed(2);
+
+  // auth system
   const myUser = user.emailVerified;
   // set privet route
   // const emailVerified = myUser;
@@ -33,7 +52,9 @@ const CartPage = () => {
             <div className="divide-y lg:col-span-2 ">
               {/* hareeeee  */}
               {cartItems.map((item) => (
-                <div className="flex flex-col md:flex-row items-start justify-between gap-4 py-8">
+                <div
+                  key={item.id}
+                  className="flex flex-col md:flex-row items-start justify-between gap-4 py-8">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className=" h-40 md:h-64 bg-gray-100 p-2  md:p-6 rounded">
                       <img
@@ -53,7 +74,10 @@ const CartPage = () => {
                         <button
                           type="button"
                           className="flex flex-wrap gap-2 text-xl text-[#333]">
-                          <span className="bg-gray-100 px-2 py-1 rounded">
+                          <span
+                            className="bg-gray-100 px-2 py-1 rounded"
+                            onClick={decreaseQuantity}>
+                        
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="w-3.5 fill-current"
@@ -64,7 +88,9 @@ const CartPage = () => {
                             </svg>
                           </span>
                           <span className="mx-4">1</span>
-                          <span className="bg-gray-100 px-2 py-1 rounded">
+                          <span
+                            className="bg-gray-100 px-2 py-1 rounded"
+                            onClick={increaseQuantity}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="w-3.5 fill-current"

@@ -139,6 +139,7 @@ const ContextProvider = ({ children }) => {
         handleCartAdded,
         removeFromCart,
         cartItems,
+        setCartItems,
       }}>
       {children}
     </CartContext.Provider>

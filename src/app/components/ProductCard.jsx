@@ -10,14 +10,15 @@ const ProductCard = ({ pd }) => {
   return (
     <div className="  w-[320px] h-[370px] shadow-lg rounded-md   mt-8">
       {/* card  */}
-      <div className="flex justify-center m-2">
-        <Image
-          className="rounded-md w-[300px]"
-          width={80}
-          height={80}
+      <div className="flex justify-end m-2">
+        <img
+          className="rounded-md w-[300px] relative left-0 top-0"
+          // width={80}
+          // height={80}
           src={img}
           alt=""
         />
+        <div className="absolute badge badge-secondary ">20% Discount</div>
       </div>
       <div className="p-2 m-2">
         <div className="flex justify-between ">
