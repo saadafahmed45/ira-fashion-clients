@@ -53,6 +53,7 @@ const Hero = () => {
           <img className="h-[300px] " src="/hero.svg" alt="" />
         </div>
       </div>
+      
     </section>
   );
 };

@@ -12,12 +12,12 @@ const Navbar = () => {
     <div className=" ">
       <div className="navbar  bg-base-300  md:px-24">
         <div className="navbar-start">
-          <Link href={"/"} className="btn btn-ghost text-xl">
+          <Link href={"/"} className="btn btn-ghost text-2xl">
             Ira's <span className="text-[#FF3EA5]">fashion</span>
           </Link>
         </div>
         <div className="md:flex navbar-center hidden ">
-          <ul className="menu menu-horizontal px-1">
+          <ul className="menu menu-horizontal px-1 font-semibold text-xl">
             <li>
               <Link href={"/product"}> Product</Link>
             </li>
