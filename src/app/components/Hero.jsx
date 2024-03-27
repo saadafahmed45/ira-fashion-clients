@@ -2,7 +2,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <section className="h-screen md:h-screen w-[80%] md:w-[90%] flex items-center overflow-hidden">
+    <section className="h-full md:h-screen w-[90%] md:w-[90%] flex items-center overflow-hidden">
       {/* hero warper */}
       <div className="flex flex-col md:flex-row justify-between ">
         {/* hero content  */}
@@ -53,7 +53,6 @@ const Hero = () => {
           <img className="h-[300px] " src="/hero.svg" alt="" />
         </div>
       </div>
-      
     </section>
   );
 };
