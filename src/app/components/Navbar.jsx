@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
 
 const Navbar = () => {
-  const { cartItems, user } = useContext(CartContext);
+  const { cartItems, user, handleSingOut } = useContext(CartContext);
   const subTotal = cartItems.reduce((total, item) => total + item.price, 0);
 
   return (
@@ -16,7 +16,7 @@ const Navbar = () => {
             Ira's <span className="text-[#FF3EA5]">fashion</span>
           </Link>
         </div>
-        <div className="md:flex navbar-center hidden ">
+        {/* <div className="md:flex navbar-center hidden ">
           <ul className="menu menu-horizontal px-1 font-semibold text-xl">
             <li>
               <Link href={"/product"}> Product</Link>
@@ -24,10 +24,17 @@ const Navbar = () => {
             <li>
               <Link href={"/login"}> Login</Link>
             </li>
-            <li></li>
           </ul>
-        </div>
+        </div> */}
         <div className="navbar-end">
+          <ul className="hidden md:flex uppercase menu menu-horizontal text-slate-800 px-1 font-semibold text-[18px]">
+            {/* <li>
+              <Link href={"/product"}> Product</Link>
+            </li> */}
+            <li>
+              <Link href={"/login"}> Login</Link>
+            </li>
+          </ul>
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -93,13 +100,15 @@ const Navbar = () => {
                 </a>
               </li>
               <li>
-                <a>Shop</a>
+                <Link href={"/product"}> Product</Link>
               </li>
               <li>
-                <a>Settings</a>
+                <Link href={"/login"}> Login</Link>
               </li>
               <li>
-                <a>Logout</a>
+                <a href="" onClick={handleSingOut}>
+                  Logout
+                </a>
               </li>
             </ul>
           </div>

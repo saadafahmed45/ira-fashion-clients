@@ -42,7 +42,7 @@ const Hero = () => {
             </div>
             <div>
               {" "}
-              <button className="text-2xl mt-4  border-2 border-[#FF3EA5] bg-[#FF3EA5] text-white px-3 py-2 hover:bg-white hover:text-[#FF3EA5] ">
+              <button className="text-md  md:text-2xl mt-4  border-2 border-[#FF3EA5] bg-[#FF3EA5] text-white px-3 py-2 hover:bg-white hover:text-[#FF3EA5] ">
                 Shop Now
               </button>
             </div>

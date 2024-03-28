@@ -2,6 +2,7 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../Context/Context";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, user } = useContext(CartContext);
@@ -48,6 +49,16 @@ const CartPage = () => {
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#333]">
             Shopping Cart
           </h2>
+          <div className="text-sm breadcrumbs m-2">
+            <ul>
+              <li>
+                <Link href={"/"}>Home</Link>
+              </li>
+              <li>
+                <a className="font-semibold">Cart Details</a>
+              </li>
+            </ul>
+          </div>
           <div className="grid lg:grid-cols-3 gap-8 items-start mt-8">
             <div className="divide-y lg:col-span-2 ">
               {/* hareeeee  */}
@@ -77,7 +88,6 @@ const CartPage = () => {
                           <span
                             className="bg-gray-100 px-2 py-1 rounded"
                             onClick={decreaseQuantity}>
-                        
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="w-3.5 fill-current"
@@ -151,11 +161,12 @@ const CartPage = () => {
                     Total <span className="ml-auto">${totalPrice}</span>
                   </li>
                 </ul>
-                <button
+                <Link
+                  href={"/cart/checkout"}
                   type="button"
-                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded">
+                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded text-center">
                   Check out
-                </button>
+                </Link>
               </div>
             )}
           </div>

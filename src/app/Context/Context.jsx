@@ -54,7 +54,7 @@ const ContextProvider = ({ children }) => {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "dark",
+      theme: "light",
     });
   }
   // localStorage save
