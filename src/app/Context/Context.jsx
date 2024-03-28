@@ -29,13 +29,13 @@ const ContextProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
     toast.success("Product added to cart", {
       position: "bottom-right",
-      autoClose: 5000,
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "dark",
+      theme: "light",
     });
   }
 
@@ -48,7 +48,7 @@ const ContextProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
     toast.warn("Product Removed to cart", {
       position: "bottom-right",
-      autoClose: 5000,
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
