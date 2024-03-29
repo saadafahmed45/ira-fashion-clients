@@ -6,21 +6,19 @@ import Link from "next/link";
 import { MdOutlineDelete } from "react-icons/md";
 
 const CartPage = () => {
-  const { cartItems, removeFromCart, user } = useContext(CartContext);
-  const [quantities, setQuantities] = useState([]);
+  const {
+    cartItems,
+    removeFromCart,
+    user,
+    quantities,
+    setQuantities,
+    subtotal,
+    totalPrice,
+  } = useContext(CartContext);
 
-  // Calculate subtotal
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * (quantities[item.id] || 1),
-    0
-  );
-
-  // Shipping cost
+  // // Shipping cost
   const shippingCost = 10; // You can adjust this value as needed
   const tax = 4; // You can adjust this value as needed
-
-  // Calculate total price including shipping
-  const totalPrice = subtotal + shippingCost + tax;
 
   // Increase and decrease quantity
   const increaseQuantity = (itemId) => {
@@ -29,8 +27,6 @@ const CartPage = () => {
       [itemId]: (prevQuantities[itemId] || 1) + 1,
     });
     setQuantities(abc);
-
-    console.log(itemId);
   };
 
   const decreaseQuantity = (itemId) => {
@@ -46,6 +42,29 @@ const CartPage = () => {
   const myUser = user.emailVerified;
   if (!myUser) {
     redirect("/login");
+  }
+
+  const allPd = [
+    "cartItems",
+    ...cartItems,
+    "quantities",
+    quantities,
+    totalPrice,
+  ];
+
+  console.log(allPd, "all");
+  // add cart fun
+  function handleCartAdded(getCurrentItem) {
+    let copyCartItems = [...cartItems];
+    const indexOfCurrentItem = copyCartItems.findIndex(
+      (item) => item.id === getCurrentItem.id
+    );
+    console.log(copyCartItems);
+    if (indexOfCurrentItem === -1) {
+      copyCartItems.push(getCurrentItem);
+    }
+    setCartItems(copyCartItems);
+    // localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
   }
 
   return (

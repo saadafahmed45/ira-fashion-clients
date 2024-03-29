@@ -1,10 +1,8 @@
 "use client";
 import React, { useContext, useState } from "react";
-
-import { app } from "../firebase/firebase.init";
 import { CartContext } from "../Context/Context";
-import { redirect, useRouter } from "next/navigation";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
   const { handleGoogleSign, user, handleSingOut } = useContext(CartContext);
@@ -12,7 +10,6 @@ const Login = () => {
   const { photoURL, displayName, email } = user;
 
   const router = useRouter();
-  const redirectToCart = () => {};
 
   if (user.emailVerified == true) {
     router.push("/cart"); // Redirecting to /cart route
@@ -33,16 +30,23 @@ const Login = () => {
           </div>
         )}
         <button
-          className="bg-green-700 text-white px-3 py-2 text-2xl "
+          className="bg-slate-500 text-white px-3 py-2 text-xl md:text-2xl flex items-center md:gap-2"
           onClick={handleGoogleSign}>
+          <span>
+            <FcGoogle className="text-3xl" />
+          </span>
           Google Sign In
         </button>
 
-        <button
-          className="bg-red-500 text-white px-3 py-2 text-2xl"
-          onClick={handleSingOut}>
-          Google Sign out
-        </button>
+        {user.emailVerified == true ? (
+          <button
+            className="bg-red-500 text-white px-3 py-2 text-2xl"
+            onClick={handleSingOut}>
+            Sign out
+          </button>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
