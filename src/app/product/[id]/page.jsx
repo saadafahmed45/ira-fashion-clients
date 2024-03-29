@@ -13,11 +13,11 @@ const SingleProduct = ({ params }) => {
   const { handleCartAdded } = useContext(CartContext);
 
   return (
-    <div className="h-[80vh] md:h-screen  px-2  md:px-24 md:py-8">
+    <div className="    px-2 my-10 md:px-24 md:py-8">
       <div className="m-8 p-4 text-3xl">Product Details</div>
       {/* warpper */}
       <div className=" flex place-items-center">
-        <div className="shadow-xl h-[500px] md:h-[400px] w-[400px] md:w-full flex flex-col md:flex-row justify-around  items-center ">
+        <div className="shadow-xl bg-white w-[400px] md:w-full flex flex-col md:flex-row justify-around  items-center ">
           {/* img */}
           <div className="flex-2  ">
             <img
