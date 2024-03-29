@@ -17,7 +17,7 @@ const SingleProduct = ({ params }) => {
       <div className="m-8 p-4 text-3xl">Product Details</div>
       {/* warpper */}
       <div className=" flex place-items-center">
-        <div className="shadow-xl h-[500px] md:h-[400px] w-[400px] md:w-full flex flex-col md:flex-row justify-around  items-center ">
+        <div className="shadow-xl bg-white w-[400px] md:w-full flex flex-col md:flex-row justify-around  items-center ">
           {/* img */}
           <div className="flex-2  ">
             <img
