@@ -25,6 +25,7 @@ const ProductCard = ({ pd }) => {
       <div className="p-2 m-2">
         <div className="flex justify-between ">
           <h2 className="text-2xl">{name}</h2>
+          <title className="text-2xl">{name}</title>
           <h3 className="text-xl">$ {price}</h3>
         </div>
         <div className="mt-6 flex justify-between ">

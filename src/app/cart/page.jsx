@@ -4,6 +4,7 @@ import { CartContext } from "../Context/Context";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { MdOutlineDelete } from "react-icons/md";
+// import { metadata } from "../layout";
 
 const CartPage = () => {
   const {
@@ -101,9 +102,15 @@ const CartPage = () => {
                       <p className="text-md font-bold text-[#333]">
                         {item.name}
                       </p>
+
                       <p className="text-gray-400 text-xs mt-1">
                         {quantities[item.id] || 1} Item
                       </p>
+                      <meta
+                        name="description"
+                        content="Check out iPhone 12 XR Pro and iPhone 12 Pro Max. Visit your local store and for expert advice."
+                        key="desc"
+                      />
                       <h4 className="text-xl font-bold text-[#333] mt-4">
                         ${(item.price * (quantities[item.id] || 1)).toFixed(2)}
                       </h4>

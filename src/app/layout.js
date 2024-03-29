@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "ira's Fashion House",
-  description: "Official website for our products",
+  description: "Official website for our product",
 };
 
 export default function RootLayout({ children }) {
@@ -22,6 +22,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           {children}
           <ToastContainer />
+
           <Footer />
         </ContextProvider>
         <SpeedInsights />
