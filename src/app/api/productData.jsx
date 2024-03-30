@@ -50,7 +50,7 @@ export const productData = {
         "Vestibulum ut ligula eget magna cursus feugiat vel non enim. Suspendisse potenti. Cras porttitor ante vel magna eleifend, eu dignissim lectus maximus.",
     },
     {
-      id: 6,
+      id: 7,
       name: "Blezer",
       img: "https://img.freepik.com/free-photo/shoes_1203-8155.jpg",
       price: 799.99,
