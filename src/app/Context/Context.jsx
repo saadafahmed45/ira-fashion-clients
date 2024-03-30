@@ -11,10 +11,6 @@ export const CartContext = createContext([]);
 const ContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  const handleAdded = () => {
-    alert("added");
-  };
-
   // add cart fun
   function handleCartAdded(getCurrentItem) {
     let copyCartItems = [...cartItems];
@@ -61,6 +57,20 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     setCartItems(JSON.parse(localStorage.getItem("cartItems")) || []);
   }, []);
+
+  const [quantities, setQuantities] = useState([]);
+  // Calculate subtotal
+  const subtotal = cartItems.reduce(
+    (total, item) => total + item.price * (quantities[item.id] || 1),
+    0
+  );
+
+  // Shipping cost
+  const shippingCost = 10; // You can adjust this value as needed
+  const tax = 4; // You can adjust this value as needed
+
+  // Calculate total price including shipping
+  const totalPrice = subtotal + shippingCost + tax;
 
   // auth
   const provider = new GoogleAuthProvider();
@@ -140,6 +150,10 @@ const ContextProvider = ({ children }) => {
         removeFromCart,
         cartItems,
         setCartItems,
+        quantities,
+        setQuantities,
+        subtotal,
+        totalPrice,
       }}>
       {children}
     </CartContext.Provider>

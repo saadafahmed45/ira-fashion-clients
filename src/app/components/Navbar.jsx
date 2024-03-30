@@ -5,8 +5,8 @@ import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
 
 const Navbar = () => {
-  const { cartItems, user, handleSingOut } = useContext(CartContext);
-  const subTotal = cartItems.reduce((total, item) => total + item.price, 0);
+  const { cartItems, user, handleSingOut, subtotal } = useContext(CartContext);
+  // const subTotal = cartItems.reduce((total, item) => total + item.price, 0);
 
   return (
     <div className=" ">
@@ -68,7 +68,9 @@ const Navbar = () => {
                   {cartItems.length}
                   Items
                 </span>
-                <span className="text-info">Subtotal: ${subTotal}</span>
+                <span className="text-info">
+                  Subtotal: ${subtotal.toFixed(2)}
+                </span>
                 <div className="card-actions">
                   <Link href={"/cart"} className="btn btn-primary btn-block">
                     View cart

@@ -1,38 +1,33 @@
-'use client';
+"use client";
 import React, { useContext, useState } from "react";
 import { CartContext } from "../Context/Context";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { MdOutlineDelete } from "react-icons/md";
 
 const CartPage = () => {
-  const { cartItems, removeFromCart, user } = useContext(CartContext);
-  const [quantities, setQuantities] = useState([]);
+  const {
+    cartItems,
+    removeFromCart,
+    user,
+    quantities,
+    setQuantities,
+    subtotal,
+    totalPrice,
+  } = useContext(CartContext);
 
-  // Calculate subtotal
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * (quantities[item.id] || 1),
-    0
-  );
-
-  // Shipping cost
+  // // Shipping cost
   const shippingCost = 10; // You can adjust this value as needed
   const tax = 4; // You can adjust this value as needed
 
-  // Calculate total price including shipping
-  const totalPrice = subtotal + shippingCost + tax;
-
   // Increase and decrease quantity
   const increaseQuantity = (itemId) => {
-  const abc =  (prevQuantities) => ({
+    const abc = (prevQuantities) => ({
       ...prevQuantities, //current value
       [itemId]: (prevQuantities[itemId] || 1) + 1,
-    })
+    });
     setQuantities(abc);
-
-    console.log(itemId);
-    
   };
-
 
   const decreaseQuantity = (itemId) => {
     if (quantities[itemId] > 1) {
@@ -47,6 +42,29 @@ const CartPage = () => {
   const myUser = user.emailVerified;
   if (!myUser) {
     redirect("/login");
+  }
+
+  const allPd = [
+    "cartItems",
+    ...cartItems,
+    "quantities",
+    quantities,
+    totalPrice,
+  ];
+
+  console.log(allPd, "all");
+  // add cart fun
+  function handleCartAdded(getCurrentItem) {
+    let copyCartItems = [...cartItems];
+    const indexOfCurrentItem = copyCartItems.findIndex(
+      (item) => item.id === getCurrentItem.id
+    );
+    console.log(copyCartItems);
+    if (indexOfCurrentItem === -1) {
+      copyCartItems.push(getCurrentItem);
+    }
+    setCartItems(copyCartItems);
+    // localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
   }
 
   return (
@@ -71,8 +89,7 @@ const CartPage = () => {
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col md:flex-row items-start justify-between gap-4 py-8"
-                >
+                  className="flex flex-col md:flex-row items-start justify-between gap-4 py-8">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className=" h-40 md:h-64 bg-gray-100 p-2  md:p-6 rounded">
                       <img
@@ -93,12 +110,10 @@ const CartPage = () => {
                       <div className="mt-6">
                         <button
                           type="button"
-                          className="flex flex-wrap gap-2 text-xl text-[#333]"
-                        >
+                          className="flex flex-wrap gap-2 text-xl text-[#333]">
                           <span
                             className="bg-gray-100 px-2 py-1 rounded"
-                            onClick={() => decreaseQuantity(item.id)}
-                          >
+                            onClick={() => decreaseQuantity(item.id)}>
                             -
                           </span>
                           <span className="mx-4">
@@ -106,8 +121,7 @@ const CartPage = () => {
                           </span>
                           <span
                             className="bg-gray-100 px-2 py-1 rounded"
-                            onClick={() => increaseQuantity(item.id)}
-                          >
+                            onClick={() => increaseQuantity(item.id)}>
                             +
                           </span>
                         </button>
@@ -116,13 +130,8 @@ const CartPage = () => {
                   </div>
                   <button onClick={() => removeFromCart(item.id)}>
                     <span className="m-2">Remove</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 fill-red-500 inline cursor-pointer"
-                      viewBox="0 0 24 24"
-                    >
-                      {/* SVG Path */}
-                    </svg>
+
+                    <MdOutlineDelete className=" text-2xl fill-red-500 inline cursor-pointer" />
                   </button>
                 </div>
               ))}
@@ -150,9 +159,7 @@ const CartPage = () => {
                   </li>
                   <li className="flex flex-wrap gap-4 text-md py-3">
                     Tax{" "}
-                    <span className="ml-auto font-bold">
-                      ${tax.toFixed(2)}
-                    </span>
+                    <span className="ml-auto font-bold">${tax.toFixed(2)}</span>
                   </li>
                   <li className="flex flex-wrap gap-4 text-md py-3 font-bold">
                     Total{" "}
@@ -162,8 +169,7 @@ const CartPage = () => {
                 <Link
                   href={"/cart/checkout"}
                   type="button"
-                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded text-center"
-                >
+                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded text-center">
                   Check out
                 </Link>
               </div>
