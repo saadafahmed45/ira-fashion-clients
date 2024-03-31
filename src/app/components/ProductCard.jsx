@@ -17,7 +17,7 @@ const ProductCard = ({ pd }) => {
             // width={80}
             // height={80}
             src={img}
-            alt=""
+            alt={name}
           />
         </Link>
         <div className="absolute badge badge-secondary ">20% Discount</div>

@@ -10,7 +10,7 @@ import { ToastContainer } from "react-toastify";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "ira's Fashion House",
+  title: "Ira's Fashion House",
   description: "Official website for our product",
 };
 
