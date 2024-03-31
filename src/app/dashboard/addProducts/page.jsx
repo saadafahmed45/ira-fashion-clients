@@ -1,6 +1,12 @@
+"use client";
 import React from "react";
 
 const AddProducts = () => {
+  const handleProductAdded = (event) => {
+    event.preventDefault();
+    const from = event.target;
+  };
+
   return (
     <div className="w-screen px-8 py-8 bg-slate-200">
       <div>
@@ -10,7 +16,7 @@ const AddProducts = () => {
 
         <div className="">
           <form
-            action=""
+            onSubmit={handleProductAdded}
             method="post"
             className="form-control w-full max-w-lg	 flex gap-4">
             <div>
@@ -19,6 +25,7 @@ const AddProducts = () => {
               </div>
               <input
                 type="text"
+                name="name"
                 placeholder="Type here"
                 className="input input-bordered w-full max-w-md input-secondary "
               />
@@ -29,6 +36,7 @@ const AddProducts = () => {
               </div>
               <input
                 type="text"
+                name="name"
                 placeholder="type Description"
                 className="input input-bordered w-full max-w-md  input-secondary "
               />
@@ -51,9 +59,11 @@ const AddProducts = () => {
               />
             </div>
             <div className="">
-              <button className="btn btn-outline btn-secondary">
-                Secondary
-              </button>
+              <input
+                type="submit"
+                value="Add product"
+                className="btn btn-outline btn-secondary"
+              />
             </div>
           </form>
         </div>
