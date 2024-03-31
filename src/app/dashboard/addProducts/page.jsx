@@ -1,17 +1,52 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const AddProducts = () => {
-  const handleProductAdded = (event) => {
-    event.preventDefault();
-    const from = event.target;
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/products")
+      .then((res) => res.json())
+      .then((data) => setProduct(data));
+  }, []);
+
+  const handleProductAdded = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const des = form.des.value;
+    const link = form.link.value;
+    const price = form.price.value;
+    const intPrice = parseInt(price); // Corrected parsing
+    const product = { name, des, link, price: intPrice }; // Changed intPrice to price
+    console.log(product);
+
+    // data post
+
+    fetch("http://localhost:5000/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("send", data);
+        // const newUsers = [...users, data];
+        if (data.insertedId) {
+          alert("user added");
+          form.reset();
+          location.reload();
+        }
+        // setUsers(newUsers);
+      });
   };
 
   return (
     <div className="w-screen px-8 py-8 bg-slate-200">
       <div>
         <div>
-          <h2 className="text-2xl ">Add New Product </h2>
+          <h2 className="text-2xl ">Add New Product {product.length} </h2>
         </div>
 
         <div className="">
@@ -32,33 +67,41 @@ const AddProducts = () => {
             </div>
             <div>
               <div className="label">
-                <span className="label-text">Product Description?</span>
+                <span className="label-text">Description</span>
               </div>
               <input
                 type="text"
-                name="name"
+                name="des"
                 placeholder="type Description"
                 className="input input-bordered w-full max-w-md  input-secondary "
               />
             </div>
 
             <div>
-              <input
-                type="file"
-                className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-              />
-            </div>
-            <div>
               <div className="label">
-                <span className="label-text">Product Price?</span>
+                <span className="label-text">Image Link</span>
               </div>
               <input
                 type="text"
+                name="link"
+                placeholder="Type here"
+                className="input input-bordered w-full max-w-md  input-secondary "
+              />
+            </div>
+
+            <div>
+              <div className="label">
+                <span className="label-text">Product Price</span>
+              </div>
+              <input
+                type="number"
+                name="price"
                 placeholder="Type here"
                 className="input input-bordered  input-secondary "
               />
             </div>
-            <div className="">
+
+            <div className="button">
               <input
                 type="submit"
                 value="Add product"
