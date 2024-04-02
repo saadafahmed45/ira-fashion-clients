@@ -32,6 +32,12 @@ const Navbar = () => {
               <Link href={"/product"}> Product</Link>
             </li> */}
             <li>
+              <Link href={"/dashboard"}> Dashboard</Link>
+            </li>
+            <li>
+              <Link href={"/blog"}> blog</Link>
+            </li>
+            <li>
               <Link href={"/login"}> Login</Link>
             </li>
           </ul>

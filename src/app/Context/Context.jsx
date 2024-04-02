@@ -91,6 +91,7 @@ const ContextProvider = ({ children }) => {
         setUser(user);
         // console.log(displayName);
         localStorage.setItem("user", JSON.stringify(user));
+
         toast.success("You are logged In", {
           position: "bottom-right",
           autoClose: 5000,

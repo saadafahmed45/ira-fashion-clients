@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const AddProducts = () => {
   const [product, setProduct] = useState([]);
@@ -34,16 +35,25 @@ const AddProducts = () => {
         console.log("send", data);
         // const newUsers = [...users, data];
         if (data.insertedId) {
-          alert("user added");
           form.reset();
           location.reload();
         }
         // setUsers(newUsers);
       });
+    toast.success("added the Product", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   };
 
   return (
-    <div className="w-screen px-8 py-8 bg-slate-200">
+    <div className="w-screen px-24 py-8 bg-slate-200">
       <div>
         <div>
           <h2 className="text-2xl ">Add New Product {product.length} </h2>
