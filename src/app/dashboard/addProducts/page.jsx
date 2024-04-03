@@ -56,7 +56,7 @@ const AddProducts = () => {
     <div className="w-screen px-24 py-8 bg-slate-200">
       <div>
         <div>
-          <h2 className="text-2xl ">Add New Product {product.length} </h2>
+          <h2 className="text-2xl ">Add New Product </h2>
         </div>
 
         <div className="">

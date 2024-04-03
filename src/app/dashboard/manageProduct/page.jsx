@@ -98,9 +98,11 @@ const ManageProduct = () => {
                       </span>
                     </td>
                     <td>
-                      <button className="btn btn-outline btn-success">
+                      <Link
+                        href={`/dashboard/manageProduct/${_id}`}
+                        className="btn btn-outline btn-success">
                         Edit
-                      </button>
+                      </Link>
                     </td>
                     <th>
                       <button
