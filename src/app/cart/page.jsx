@@ -23,11 +23,11 @@ const CartPage = () => {
 
   // Increase and decrease quantity
   const increaseQuantity = (itemId) => {
-    const abc = (prevQuantities) => ({
+    const item = (prevQuantities) => ({
       ...prevQuantities, //current value
       [itemId]: (prevQuantities[itemId] || 1) + 1,
     });
-    setQuantities(abc);
+    setQuantities(item);
   };
 
   const decreaseQuantity = (itemId) => {
@@ -45,28 +45,8 @@ const CartPage = () => {
     redirect("/login");
   }
 
-  const allPd = [
-    "cartItems",
-    ...cartItems,
-    "quantities",
-    quantities,
-    totalPrice,
-  ];
-
-  console.log(allPd, "all");
-  // add cart fun
-  function handleCartAdded(getCurrentItem) {
-    let copyCartItems = [...cartItems];
-    const indexOfCurrentItem = copyCartItems.findIndex(
-      (item) => item.id === getCurrentItem.id
-    );
-    console.log(copyCartItems);
-    if (indexOfCurrentItem === -1) {
-      copyCartItems.push(getCurrentItem);
-    }
-    setCartItems(copyCartItems);
-    // localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
-  }
+  const allData = [...cartItems, quantities];
+  console.log(allData);
 
   return (
     <div className="flex justify-center px-8 md:px-24 py-8">

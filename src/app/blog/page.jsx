@@ -20,7 +20,7 @@ const Blog = () => {
           <div className="  w-[320px] h-[370px] shadow-lg rounded-md   mt-8">
             {/* card  */}
             <div className="flex justify-end m-2">
-              <Link href={`/product/${_id}`}>
+              <Link href={`/blog/${_id}`}>
                 <img
                   className="rounded-md w-[300px] relative left-0 top-0"
                   // width={80}
@@ -43,10 +43,11 @@ const Blog = () => {
                 {" "}
                 <button
                   className=" border-2 border-[#FF3EA5] bg-white text-[#FF3EA5]  hover:bg-[#FF3EA5] hover:text-white  py-1 px-2"
-                  onClick={() => handleCartAdded(pd)}>
+                  onClick={() => handleCartAdded(pd)}
+                >
                   Add to cart
                 </button>
-                <Link href={`/product/${_id}`}>see more.</Link>
+                <Link href={`/blog/${_id}`}>see more.</Link>
               </div>
             </div>
           </div>

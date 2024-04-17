@@ -155,7 +155,8 @@ const ContextProvider = ({ children }) => {
         setQuantities,
         subtotal,
         totalPrice,
-      }}>
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
