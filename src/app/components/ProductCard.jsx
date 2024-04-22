@@ -8,12 +8,12 @@ const ProductCard = ({ pd }) => {
   const { handleCartAdded } = useContext(CartContext);
 
   return (
-    <div className="  w-[320px] h-[370px] shadow-lg rounded-md   mt-8">
+    <div className="  w-[px]  shadow-lg rounded-md   mt-8">
       {/* card  */}
       <div className="flex justify-end m-2">
         <Link href={`/product/${id}`}>
           <img
-            className="rounded-md w-[300px] relative left-0 top-0"
+            className="rounded-md w-96 relative left-0 top-0 object-cover object-center"
             // width={80}
             // height={80}
             src={img}
@@ -23,10 +23,9 @@ const ProductCard = ({ pd }) => {
         <div className="absolute badge badge-secondary ">20% Discount</div>
       </div>
       <div className="p-2 m-2">
-        <div className="flex justify-between ">
-          <h2 className="text-2xl">{name}</h2>
-          <title className="text-2xl">{name}</title>
-          <h3 className="text-xl">$ {price}</h3>
+       <div class="mt-4">
+          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+          <h2 class="text-gray-900 title-font text-lg font-medium">{name}</h2>
         </div>
         <div className="mt-6 flex justify-between ">
           {" "}
