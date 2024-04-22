@@ -1,6 +1,7 @@
 'use client';
 
 import { CartContext } from "@/app/Context/Context";
+import Link from "next/link";
 import React, { useContext } from "react";
 
 const CheckOutPage = () => {
@@ -16,14 +17,25 @@ const CheckOutPage = () => {
 
   return (
     <div className='h-full px-24 my-8 '>
+            <h1 className='relative text-2xl font-medium text-gray-700 sm:text-3xl'>
+                Secure Checkout
+                <span className='mt-2 block h-1 w-10 bg-pink-500 sm:w-20'></span>
+              </h1>
+          <div className="text-sm breadcrumbs m-2">
+            <ul>
+              <li>
+                <Link href={"/cart"}>Cart Details</Link>
+              </li>
+              <li>
+                <a className="font-semibold">Order Products</a>
+              </li>
+            </ul>
+          </div>
       <div className='relative mx-auto w-full bg-white'>
         <div className='grid min-h-screen grid-cols-10'>
           <div className='col-span-full py-6 px-4 sm:py-12 lg:col-span-6 lg:py-24'>
             <div className='mx-auto w-full max-w-lg'>
-              <h1 className='relative text-2xl font-medium text-gray-700 sm:text-3xl'>
-                Secure Checkout
-                <span className='mt-2 block h-1 w-10 bg-pink-500 sm:w-20'></span>
-              </h1>
+          
               <form action='' className='mt-10 flex flex-col space-y-4'>
                 <div>
                   <label
