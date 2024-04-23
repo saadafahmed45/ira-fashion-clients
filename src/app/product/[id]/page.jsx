@@ -14,8 +14,19 @@ const SingleProduct = ({ params }) => {
 
   return (
     <div className="  ">
+      
       <div class="text-gray-600 body-font overflow-hidden">
         <div class="container px-5 py-24 mx-auto">
+            <div className="text-sm breadcrumbs m-2 ml-24">
+            <ul>
+              <li>
+                <Link href={"/"}>Home</Link>
+              </li>
+              <li>
+                <a className="font-semibold">Product Details</a>
+              </li>
+            </ul>
+          </div>
           <div class="lg:w-4/5 mx-auto flex flex-wrap">
             <img
               alt="ecommerce"

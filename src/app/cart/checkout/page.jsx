@@ -17,7 +17,13 @@ const CheckOutPage = () => {
 
   return (
     <div className='h-full px-24 my-8 '>
-            <h1 className='relative text-2xl font-medium text-gray-700 sm:text-3xl'>
+          
+      <div className='relative mx-auto w-full bg-white'>
+        <div className='grid min-h-screen grid-cols-10'>
+          <div className='col-span-full py-6 px-4 sm:py-12 lg:col-span-6 lg:py-24'>
+            <div className='mx-auto w-full max-w-lg'>
+    <div className="">
+             <h1 className='relative text-2xl font-medium text-gray-700 sm:text-3xl'>
                 Secure Checkout
                 <span className='mt-2 block h-1 w-10 bg-pink-500 sm:w-20'></span>
               </h1>
@@ -31,10 +37,7 @@ const CheckOutPage = () => {
               </li>
             </ul>
           </div>
-      <div className='relative mx-auto w-full bg-white'>
-        <div className='grid min-h-screen grid-cols-10'>
-          <div className='col-span-full py-6 px-4 sm:py-12 lg:col-span-6 lg:py-24'>
-            <div className='mx-auto w-full max-w-lg'>
+           </div>
           
               <form action='' className='mt-10 flex flex-col space-y-4'>
                 <div>

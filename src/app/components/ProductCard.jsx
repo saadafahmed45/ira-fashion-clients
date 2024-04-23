@@ -23,9 +23,9 @@ const ProductCard = ({ pd }) => {
         <div className="absolute badge badge-secondary ">20% Discount</div>
       </div>
       <div className="p-2 m-2">
-       <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">{name}</h2>
+       <div className="mt-4">
+          <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+          <h2 className="text-gray-900 title-font text-lg font-medium">{name}</h2>
         </div>
         <div className="mt-6 flex justify-between ">
           {" "}
