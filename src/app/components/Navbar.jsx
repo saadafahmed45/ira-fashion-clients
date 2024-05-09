@@ -31,12 +31,12 @@ const Navbar = () => {
             {/* <li>
               <Link href={"/product"}> Product</Link>
             </li> */}
-            <li>
+            {/* <li>
               <Link href={"/dashboard"}> Dashboard</Link>
             </li>
             <li>
               <Link href={"/blog"}> blog</Link>
-            </li>
+            </li> */}
             <li>
               <Link href={"/login"}> Login</Link>
             </li>
@@ -78,7 +78,9 @@ const Navbar = () => {
                   Subtotal: ${subtotal.toFixed(2)}
                 </span>
                 <div className='card-actions'>
-                  <Link href={"/cart"} className='btn  btn-outline hover:bg-pink-500 btn-block'>
+                  <Link
+                    href={"/cart"}
+                    className='btn  btn-outline hover:bg-pink-500 btn-block'>
                     View cart
                   </Link>
                 </div>
