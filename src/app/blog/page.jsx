@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import productApi from "../api/productApi";
 
 const Blog = () => {
   const [product, setProduct] = useState([]);
+
+  
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch(productApi)
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);

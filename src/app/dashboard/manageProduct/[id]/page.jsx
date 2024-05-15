@@ -29,7 +29,7 @@ const UpdatedProduct = ({ params }) => {
 
     // data post
 
-    fetch(`http://localhost:5000/products/${id}`, {
+    fetch(`https://ira-fashion-server.onrender.com/products/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

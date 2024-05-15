@@ -1,13 +1,15 @@
 "use client";
 
+import productApi from "@/app/api/productApi";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const ManageProduct = () => {
   const [product, setProduct] = useState([]);
+  
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch(productApi)
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);
@@ -17,7 +19,7 @@ const ManageProduct = () => {
   const handleDelete = (_id) => {
     console.log("dlt", _id);
 
-    fetch(`http://localhost:5000/products/${_id}`, {
+    fetch(`https://ira-fashion-server.onrender.com/products/${_id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())

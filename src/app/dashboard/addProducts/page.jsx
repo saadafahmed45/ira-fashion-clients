@@ -1,11 +1,12 @@
 "use client";
+import productApi from "@/app/api/productApi";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const AddProducts = () => {
   const [product, setProduct] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch(productApi)
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);
