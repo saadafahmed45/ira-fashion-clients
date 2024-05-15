@@ -24,7 +24,7 @@ const ProductCard = ({ pd }) => {
       </div>
       <div className="p-2 m-2">
        <div className="mt-4">
-          <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+          <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">Shoes</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">{name}</h2>
         </div>
         <div className="mt-6 flex justify-between ">
@@ -34,7 +34,9 @@ const ProductCard = ({ pd }) => {
             onClick={() => handleCartAdded(pd)}>
             Add to cart
           </button>
-          <Link href={`/product/${id}`}>see more.</Link>
+          <h2 className="text-gray-900 title-font text-lg font-medium">${price}</h2>
+
+          {/* <Link href={`/product/${id}`}>see more.</Link> */}
         </div>
       </div>
     </div>

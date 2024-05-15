@@ -10,7 +10,7 @@ export default function Home() {
       <div className='divider'>Products</div>
 
       <Product />
-      <PdGallery />
+      {/* <PdGallery /> */}
     </main>
   );
 }
