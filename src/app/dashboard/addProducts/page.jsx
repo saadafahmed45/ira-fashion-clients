@@ -1,58 +1,69 @@
 "use client";
-import productApi from "@/app/api/productApi";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const AddProducts = () => {
-  const [product, setProduct] = useState([]);
-  useEffect(() => {
-    fetch(productApi)
-      .then((res) => res.json())
-      .then((data) => setProduct(data));
-  }, []);
-
   const handleProductAdded = (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
     const des = form.des.value;
-    const link = form.link.value;
+    const photoUrl = form.photoUrl.value;
+    const category = form.category.value;
     const price = form.price.value;
     const intPrice = parseInt(price); // Corrected parsing
-    const product = { name, des, link, price: intPrice }; // Changed intPrice to price
+    const product = { name, des, photoUrl, price: intPrice, category }; // Changed intPrice to price
     console.log(product);
 
     // data post
 
-    fetch("http://localhost:5000/products", {
+    fetch("https://ira-fashion-server.onrender.com/products", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(product),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log("send", data);
-        // const newUsers = [...users, data];
         if (data.insertedId) {
-          form.reset();
-          location.reload();
-        }
-        // setUsers(newUsers);
-      });
-    toast.success("added the Product", {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
-  };
+          toast.success("Added the Product", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          // form.reset();
 
+          setTimeout(function () {
+            location.reload(1);
+          }, 3000);
+        }
+      })
+      .catch((error) => {
+        console.error("Error adding product:", error);
+        toast.error("Error adding product", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      });
+  };
   return (
     <div className="w-screen px-24 py-8 bg-slate-200">
       <div>
@@ -64,7 +75,8 @@ const AddProducts = () => {
           <form
             onSubmit={handleProductAdded}
             method="post"
-            className="form-control w-full max-w-lg	 flex gap-4">
+            className="form-control w-full max-w-lg	 flex gap-4"
+          >
             <div>
               <div className="label">
                 <span className="label-text">What is your Product name?</span>
@@ -90,11 +102,11 @@ const AddProducts = () => {
 
             <div>
               <div className="label">
-                <span className="label-text">Image Link</span>
+                <span className="label-text">Image photoUrl</span>
               </div>
               <input
                 type="text"
-                name="link"
+                name="photoUrl"
                 placeholder="Type here"
                 className="input input-bordered w-full max-w-md  input-secondary "
               />
@@ -102,14 +114,35 @@ const AddProducts = () => {
 
             <div>
               <div className="label">
-                <span className="label-text">Product Price</span>
+                <span className="label-text"> Price</span>
               </div>
               <input
+                required
                 type="number"
                 name="price"
                 placeholder="Type here"
                 className="input input-bordered  input-secondary "
               />
+            </div>
+
+            <div>
+              <div className="label">
+                <span className="label-text"> Category</span>
+              </div>
+              <select
+                className="select select-secondary w-full max-w-xs"
+                required
+                type="text"
+                name="category"
+              >
+                <option disabled selected>
+                  Select product Category?
+                </option>
+                <option>Shoes</option>
+                <option>T-shirt</option>
+                <option>Dress</option>
+                <option>Pant</option>
+              </select>
             </div>
 
             <div className="button">

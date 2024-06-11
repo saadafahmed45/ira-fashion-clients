@@ -2,22 +2,28 @@
 import { CartContext } from "@/app/Context/Context";
 import { productData } from "@/app/api/productData";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const SingleProduct = ({ params }) => {
-  const prID = params.id;
+  const id = params.id;
   const data = productData.products;
-  const product = data.find((p) => p.id === parseInt(prID));
-  const { id, name, img, price, description } = product;
+  // const product = data.find((p) => p.id === parseInt(prID));
 
   const { handleCartAdded } = useContext(CartContext);
+  const [product, setProduct] = useState([]);
+
+  useEffect(() => {
+    fetch(`https://ira-fashion-server.onrender.com/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => setProduct(data));
+  }, []);
+  const { _id, name, photoUrl, price, des } = product;
 
   return (
-    <div className="  ">
-      
+    <div className=" ">
       <div class="text-gray-600 body-font overflow-hidden">
         <div class="container px-5 py-24 mx-auto">
-            <div className="text-sm breadcrumbs m-2 ml-24">
+          <div className="text-sm breadcrumbs m-2 ml-24">
             <ul>
               <li>
                 <Link href={"/"}>Home</Link>
@@ -31,7 +37,7 @@ const SingleProduct = ({ params }) => {
             <img
               alt="ecommerce"
               class="lg:w-1/2 w-full lg:h-auto h-64 object-contain object-center rounded"
-              src={img}
+              src={photoUrl}
             />
             <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <h2 class="text-sm title-font text-gray-500 tracking-widest">
@@ -78,7 +84,7 @@ const SingleProduct = ({ params }) => {
                   <svg
                     fill="currentColor"
                     stroke="currentColor"
-                    stroke-linecap="round"   
+                    stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
                     class="w-4 h-4 text-pink-500"
@@ -138,14 +144,7 @@ const SingleProduct = ({ params }) => {
                   </a>
                 </span>
               </div>
-              <p class="leading-relaxed">
-                Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-                sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
-                juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-                seitan poutine tumeric. Gastropub blue bottle austin listicle
-                pour-over, neutra jean shorts keytar banjo tattooed umami
-                cardigan.
-              </p>
+              <p class="leading-relaxed">{des}</p>
               <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
                 <div class="flex">
                   <span class="mr-3">Color</span>

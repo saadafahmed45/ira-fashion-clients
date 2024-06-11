@@ -10,7 +10,7 @@ const SingleBlog = ({ params }) => {
       .then((res) => res.json())
       .then((data) => setProduct(data));
   }, []);
-  const { _id, name, link, price, des } = product;
+  const { _id, name, photoUrl, price, des } = product;
 
   return (
     <div className="    px-2  md:px-24 md:py-8">
@@ -24,8 +24,8 @@ const SingleBlog = ({ params }) => {
           <div className="flex-2  ">
             <img
               className=" w-[400px]  md:h-[400px] rounded-md"
-              src={link}
-              alt=""
+              src={photoUrl}
+              alt={name}
             />
           </div>
           {/* content */}
