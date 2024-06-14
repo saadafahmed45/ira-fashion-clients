@@ -69,13 +69,14 @@ const CartPage = () => {
             <div className="divide-y lg:col-span-2">
               {cartItems.map((item) => (
                 <div
-                  key={item.id}
-                  className="flex flex-col md:flex-row items-start justify-between gap-4 py-8">
+                  key={item._id}
+                  className="flex flex-col md:flex-row items-start justify-between gap-4 py-8"
+                >
                   <div className="flex flex-col md:flex-row gap-6">
-                    <div className=" h-40 md:h-64 bg-gray-100 p-2  md:p-6 rounded">
+                    <div className=" h-40 md:h-64 bg-gray-100 p-2   rounded">
                       <img
-                        src={item.img}
-                        className="w-full h-full object-contain shrink-0"
+                        src={item.photoUrl}
+                        className="w-full h-full  object-contain shrink-0"
                       />
                     </div>
                     <div>
@@ -84,7 +85,7 @@ const CartPage = () => {
                       </p>
 
                       <p className="text-gray-400 text-xs mt-1">
-                        {quantities[item.id] || 1} Item
+                        {quantities[item._id] || 1} Item
                       </p>
                       <meta
                         name="description"
@@ -92,30 +93,33 @@ const CartPage = () => {
                         key="desc"
                       />
                       <h4 className="text-xl font-bold text-[#333] mt-4">
-                        ${(item.price * (quantities[item.id] || 1)).toFixed(2)}
+                        ${(item.price * (quantities[item._id] || 1)).toFixed(2)}
                       </h4>
                       <div className="mt-6">
                         <button
                           type="button"
-                          className="flex flex-wrap gap-2 text-xl text-[#333]">
+                          className="flex flex-wrap gap-2 text-xl text-[#333]"
+                        >
                           <span
                             className="bg-gray-100 px-2 py-1 rounded"
-                            onClick={() => decreaseQuantity(item.id)}>
+                            onClick={() => decreaseQuantity(item._id)}
+                          >
                             -
                           </span>
                           <span className="mx-4">
-                            {quantities[item.id] || 1}
+                            {quantities[item._id] || 1}
                           </span>
                           <span
                             className="bg-gray-100 px-2 py-1 rounded"
-                            onClick={() => increaseQuantity(item.id)}>
+                            onClick={() => increaseQuantity(item._id)}
+                          >
                             +
                           </span>
                         </button>
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => removeFromCart(item.id)}>
+                  <button onClick={() => removeFromCart(item._id)}>
                     <span className="m-2">Remove</span>
 
                     <MdOutlineDelete className=" text-2xl fill-red-500 inline cursor-pointer" />
@@ -156,7 +160,8 @@ const CartPage = () => {
                 <Link
                   href={"/cart/checkout"}
                   type="button"
-                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded text-center">
+                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded text-center"
+                >
                   Check out
                 </Link>
               </div>

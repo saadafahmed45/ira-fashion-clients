@@ -15,7 +15,7 @@ const ContextProvider = ({ children }) => {
   function handleCartAdded(getCurrentItem) {
     let copyCartItems = [...cartItems];
     const indexOfCurrentItem = copyCartItems.findIndex(
-      (item) => item.id === getCurrentItem.id
+      (item) => item._id === getCurrentItem._id
     );
     console.log(copyCartItems);
     if (indexOfCurrentItem === -1) {
@@ -39,7 +39,7 @@ const ContextProvider = ({ children }) => {
   function removeFromCart(getCurrentItem) {
     // console.log(getCurrentItem);
     let copyCartItems = [...cartItems];
-    copyCartItems = copyCartItems.filter((item) => item.id !== getCurrentItem);
+    copyCartItems = copyCartItems.filter((item) => item._id !== getCurrentItem);
     setCartItems(copyCartItems);
     localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
     toast.warn("Product Removed to cart", {
@@ -61,7 +61,7 @@ const ContextProvider = ({ children }) => {
   const [quantities, setQuantities] = useState([]);
   // Calculate subtotal
   const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * (quantities[item.id] || 1),
+    (total, item) => total + item.price * (quantities[item._id] || 1),
     0
   );
 
@@ -72,6 +72,19 @@ const ContextProvider = ({ children }) => {
   // Calculate total price including shipping
   const totalPrice = subtotal + shippingCost + tax;
 
+  // order
+  const [orderDetails, setOrderDetails] = useState([]);
+
+  const handleOrder = () => {
+    const newOrder = {
+      user,
+      items: cartItems,
+      totalPrice,
+      orderDate: new Date().toISOString(),
+    };
+    setOrderDetails(newOrder);
+  };
+  console.log(orderDetails);
   // auth
   const provider = new GoogleAuthProvider();
   const auth = getAuth(app);
@@ -155,6 +168,8 @@ const ContextProvider = ({ children }) => {
         setQuantities,
         subtotal,
         totalPrice,
+        handleOrder,
+        orderDetails,
       }}
     >
       {children}

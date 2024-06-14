@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
 
 const ProductCard = ({ pd }) => {
-  const { _id, name, photoUrl, price, description } = pd;
+  const { _id, name, photoUrl, price, des, category } = pd;
   const { handleCartAdded } = useContext(CartContext);
 
   return (
@@ -14,7 +14,7 @@ const ProductCard = ({ pd }) => {
       <div className="flex justify-end m-2">
         <Link href={`/product/${_id}`}>
           <img
-            className="rounded-md w-96 relative left-0 top-0 object-cover object-center"
+            className="rounded-md w-80 relative left-0 top-0 object-cover object-center"
             // width={80}
             // height={80}
             src={photoUrl}
@@ -26,7 +26,7 @@ const ProductCard = ({ pd }) => {
       <div className="p-2 m-2">
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">
-            Shoes
+            {category}
           </h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">
             {name}

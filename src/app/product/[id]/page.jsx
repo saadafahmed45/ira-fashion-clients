@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 const SingleProduct = ({ params }) => {
   const id = params.id;
-  const data = productData.products;
+  // const data = productData.products;
   // const product = data.find((p) => p.id === parseInt(prID));
 
   const { handleCartAdded } = useContext(CartContext);
