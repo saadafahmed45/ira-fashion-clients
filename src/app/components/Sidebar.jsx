@@ -28,6 +28,9 @@ const Sidebar = () => {
               <Link href={"/dashboard"}>Dashboard</Link>
             </li>
             <li>
+              <Link href={"/dashboard/order"}> Orders</Link>
+            </li>
+            <li>
               <Link href={"/dashboard/addProducts"}>Add Product</Link>
             </li>{" "}
             <li>

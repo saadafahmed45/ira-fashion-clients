@@ -15,7 +15,7 @@ const Product = async () => {
   return (
     <div className="h-full py-8  my-8 space-y-6">
       <div>
-        <h2 className="text-2xl px-8 ">Shoes collection</h2>
+        <h2 className="text-2xl px-2 ">Shoes collection</h2>
       </div>
       {/* card  */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center">
@@ -24,7 +24,7 @@ const Product = async () => {
         ))}
       </div>
       <div>
-        <h2 className="text-2xl py-8 ">Dress collection</h2>
+        <h2 className="text-2xl py-2 ">Dress collection</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center">
         {dressItems.map((pd) => (
@@ -32,7 +32,7 @@ const Product = async () => {
         ))}
       </div>
       <div>
-        <h2 className="text-2xl py-8 ">T-Shirt collection</h2>
+        <h2 className="text-2xl py-2 ">T-Shirt collection</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center">
         {shirtItems.map((pd) => (

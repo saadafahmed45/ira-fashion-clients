@@ -6,8 +6,9 @@ import { CartContext } from "../Context/Context";
 
 const ProductCard = ({ pd }) => {
   const { _id, name, photoUrl, price, des, category } = pd;
-  const { handleCartAdded } = useContext(CartContext);
+  const { cartItems, handleCartAdded } = useContext(CartContext);
 
+  const isInCart = cartItems.some((item) => item._id === _id);
   return (
     <div className="w-[px]  shadow-lg rounded-md   mt-8">
       {/* card  */}
@@ -35,10 +36,13 @@ const ProductCard = ({ pd }) => {
         <div className="mt-6 flex justify-between ">
           {" "}
           <button
-            className=" border-2 border-[#FF3EA5] bg-white text-[#FF3EA5]  hover:bg-[#FF3EA5] hover:text-white  py-1 px-2"
-            onClick={() => handleCartAdded(pd)}
+            className={`border-2 border-[#FF3EA5] bg-white text-[#FF3EA5] hover:bg-[#FF3EA5] hover:text-white py-1 px-2 ${
+              isInCart ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={() => !isInCart && handleCartAdded(pd)}
+            disabled={isInCart}
           >
-            Add to cart
+            {isInCart ? "Added" : "Add to cart"}
           </button>
           <h2 className="text-gray-900 title-font text-lg font-medium">
             ${price}

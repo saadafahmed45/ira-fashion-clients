@@ -24,6 +24,7 @@ const CheckOutPage = () => {
       products: cartItems,
       totalPrice,
       orderDate: new Date().toISOString(),
+      status: "pending",
     };
 
     setOrderDetails(newOrder);

@@ -68,7 +68,7 @@ const AddProducts = () => {
     <div className="w-screen px-24 py-8 bg-slate-200">
       <div>
         <div>
-          <h2 className="text-2xl ">Add New Product </h2>
+          <h2 className="text-2xl font-bold mb-6 ">Add New Product</h2>
         </div>
 
         <div className="">
@@ -79,7 +79,9 @@ const AddProducts = () => {
           >
             <div>
               <div className="label">
-                <span className="label-text">What is your Product name?</span>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Product Name
+                </label>
               </div>
               <input
                 type="text"
@@ -90,19 +92,23 @@ const AddProducts = () => {
             </div>
             <div>
               <div className="label">
-                <span className="label-text">Description</span>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Description
+                </label>
               </div>
-              <input
-                type="text"
+              <textarea
                 name="des"
-                placeholder="type Description"
-                className="input input-bordered w-full max-w-md  input-secondary "
-              />
+                placeholder="Type Description"
+                className="textarea textarea-bordered w-full max-w-md textarea-secondary"
+                required
+              ></textarea>
             </div>
 
             <div>
               <div className="label">
-                <span className="label-text">Image photoUrl</span>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Image URL
+                </label>
               </div>
               <input
                 type="text"
@@ -114,7 +120,9 @@ const AddProducts = () => {
 
             <div>
               <div className="label">
-                <span className="label-text"> Price</span>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Price
+                </label>
               </div>
               <input
                 required
@@ -127,7 +135,9 @@ const AddProducts = () => {
 
             <div>
               <div className="label">
-                <span className="label-text"> Category</span>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Category
+                </label>
               </div>
               <select
                 className="select select-secondary w-full max-w-xs"
