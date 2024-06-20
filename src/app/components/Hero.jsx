@@ -4,12 +4,12 @@ const Hero = () => {
   return (
     <section className="h-full md:h-screen w-[80%] md:w-[90%] flex items-center ">
       {/* hero warper */}
-      <div className="flex flex-col md:flex-row justify-between ">
+      <div className="flex flex-col md:flex-row items-center justify-between ">
         {/* hero content  */}
         <div className="md:flex-1 ">
           {/* hero content  text sec*/}
 
-          <div className="flex flex-col  gap-4  mt-8 md:w-[100%]">
+          <div className="flex flex-col  gap-4  mt-8 md:w-[90%]">
             <h2 className="text-3xl md:text-5xl font-semibold md:font-bold md:w-[78%] ">
               Unleash Your Style: Dive into Our Exclusive Collection Today!
             </h2>

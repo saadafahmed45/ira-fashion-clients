@@ -6,6 +6,7 @@ import ContextProvider from "./Context/Context";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import NoticeBannar from "./components/NoticeBannar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <ContextProvider>
+          <NoticeBannar />
           <Navbar />
           {children}
           <ToastContainer />
