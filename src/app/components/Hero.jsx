@@ -2,7 +2,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <section className="h-full md:h-screen w-[80%] md:w-[90%] flex items-center ">
+    <section className="h-full md:h-screen w-[80%] md:w-[90%] flex items-center px-8  md:px-24 ">
       {/* hero warper */}
       <div className="flex flex-col md:flex-row items-center justify-between ">
         {/* hero content  */}

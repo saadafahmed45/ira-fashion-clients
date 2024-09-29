@@ -3,7 +3,7 @@ import React from "react";
 const NoticeBannar = () => {
   return (
     <div>
-      <div className="px-24 py-2 dark:bg-gray-50 dark:text-gray-800">
+      <div className=" px-8 md:px-24 py-2  dark:bg-gray-50 dark:text-gray-800">
         <div className="flex items-center mx-auto container justify-center md:justify-between py-2">
           <div>
             <span>

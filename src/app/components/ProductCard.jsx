@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
+import { Heart, ShoppingCart } from "lucide-react";
 
 const ProductCard = ({ pd }) => {
   const { _id, name, photoUrl, price, des, category } = pd;
@@ -10,46 +11,34 @@ const ProductCard = ({ pd }) => {
 
   const isInCart = cartItems.some((item) => item._id === _id);
   return (
-    <div className="w-[px]  shadow-lg rounded-md   mt-8">
-      {/* card  */}
-      <div className="flex justify-end m-2">
+    <div className=" space-y-6 py-4">
+      {/* Card 3: With Quick Actions */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden relative">
         <Link href={`/product/${_id}`}>
           <img
-            className="rounded-md w-80 relative left-0 top-0 object-cover object-center"
-            // width={80}
-            // height={80}
             src={photoUrl}
             alt={name}
+            className=" w-100 md:w-80 object-cover"
           />
         </Link>
-        <div className="absolute badge badge-secondary ">20% Discount</div>
-      </div>
-      <div className="p-2 m-2">
-        <div className="mt-4">
-          <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">
-            {category}
-          </h3>
-          <h2 className="text-gray-900 title-font text-lg font-medium">
-            {name}
-          </h2>
-        </div>
-        <div className="mt-6 flex justify-between ">
-          {" "}
-          <button
-            className={`border-2 border-[#FF3EA5] bg-white text-[#FF3EA5] hover:bg-[#FF3EA5] hover:text-white py-1 px-2 ${
-              isInCart ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            onClick={() => !isInCart && handleCartAdded(pd)}
-            disabled={isInCart}
-          >
-            {isInCart ? "Added" : "Add to cart"}
+        <div className="absolute top-2 right-2 flex space-x-2">
+          <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100">
+            <Heart className="w-5 h-5 text-red-500" />
           </button>
-          <h2 className="text-gray-900 title-font text-lg font-medium">
-            ${price}
-          </h2>
-          {/* <Link href={`/product/${id}`}>see more.</Link> */}
+          <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100">
+            <ShoppingCart
+              onClick={() => !isInCart && handleCartAdded(pd)}
+              disabled={isInCart}
+              className="w-5 h-5 text-blue-500"
+            />
+          </button>
+        </div>
+        <div className="p-4">
+          <h3 className="font-semibold text-lg mb-2"> {name}</h3>
+          <p className="text-gray-600"> ${price}</p>
         </div>
       </div>
+      {/* card  */}
     </div>
   );
 };

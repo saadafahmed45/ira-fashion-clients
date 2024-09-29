@@ -56,9 +56,9 @@ const CheckOutPage = () => {
   };
 
   return (
-    <div className="h-full px-24 my-8 ">
+    <div className="h-full px-4 md:px-24 py-6 ">
       <div className="relative mx-auto w-full bg-white">
-        <div className="grid min-h-screen grid-cols-10">
+        <div className="grid min-h-screen grid-cols-10 ">
           <div className="col-span-full py-6 px-4 sm:py-12 lg:col-span-6 lg:py-24">
             <div className="mx-auto w-full max-w-lg">
               <div className="">
@@ -78,12 +78,9 @@ const CheckOutPage = () => {
                 </div>
               </div>
 
-              <form action="" className="mt-10 flex flex-col space-y-4">
+              <form action="" className="mt-10 flex flex-col space-y-4 py-4">
                 <div>
-                  <label
-                    for="email"
-                    className="text-xs font-semibold text-gray-500"
-                  >
+                  <label className="text-xs font-semibold text-gray-500">
                     Email
                   </label>
                   <input
@@ -150,9 +147,7 @@ const CheckOutPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label for="card-name" className="sr-only">
-                    Card name
-                  </label>
+                  <label className="sr-only">Card name</label>
                   <input
                     type="text"
                     id="card-name"

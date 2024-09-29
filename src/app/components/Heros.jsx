@@ -2,10 +2,10 @@ import React from "react";
 
 const Heros = () => {
   return (
-    <section className="">
+    <section className="px-8  md:px-24">
       <div className="container flex flex-col justify-center p-6 mx-auto sm:py-12 lg:py-24 lg:flex-row lg:justify-between">
         <div className="flex flex-col justify-center p-6 text-center w-full rounded-sm lg:max-w-md xl:max-w-lg lg:text-left">
-          <h1 className=" text-4xl md:text-5xl  font-bold leading-none sm:text-6xl">
+          <h1 className=" text-5xl md:text-6xl  font-bold leading-none sm:text-6xl">
             Unleash Your Style: Dive into Our Exclusive
             <span className="dark:text-pink-600"> Collection</span>Today!
           </h1>

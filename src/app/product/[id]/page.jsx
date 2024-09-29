@@ -20,10 +20,10 @@ const SingleProduct = ({ params }) => {
   const { _id, name, photoUrl, price, des } = product;
 
   return (
-    <div className=" ">
+    <div className=" py-2 md:px-16 ">
       <div class="text-gray-600 body-font overflow-hidden">
-        <div class="container px-5 py-24 mx-auto">
-          <div className="text-sm breadcrumbs m-2 ml-24">
+        <div class="container px-4  mx-auto">
+          <div className="text-sm breadcrumbs m-2 ">
             <ul>
               <li>
                 <Link href={"/"}>Home</Link>
@@ -33,7 +33,7 @@ const SingleProduct = ({ params }) => {
               </li>
             </ul>
           </div>
-          <div class="lg:w-4/5 mx-auto flex flex-wrap">
+          <div class="lg:w-4/5 mx-auto flex flex-wrap  py-16">
             <img
               alt="ecommerce"
               class="lg:w-1/2 w-full lg:h-auto h-64 object-contain object-center rounded"
@@ -41,7 +41,7 @@ const SingleProduct = ({ params }) => {
             />
             <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <h2 class="text-sm title-font text-gray-500 tracking-widest">
-                BRAND NAME
+                Adidas
               </h2>
               <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">
                 {name}
@@ -179,7 +179,7 @@ const SingleProduct = ({ params }) => {
               </div>
               <div class="flex">
                 <span class="title-font font-medium text-2xl text-gray-900">
-                  {price}
+                  $ {price}
                 </span>
                 <button
                   class="flex ml-auto text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded"

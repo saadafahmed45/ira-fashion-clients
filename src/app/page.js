@@ -8,7 +8,7 @@ import Testimonial from "./components/Testimonial ";
 
 export default function Home() {
   return (
-    <main className="px-8  md:px-24 ">
+    <main className=" ">
       {/* <Heros /> */}
       <Hero />
       <div className="divider">Products</div>
