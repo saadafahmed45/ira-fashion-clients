@@ -12,11 +12,24 @@ const SingleProduct = ({ params }) => {
   const { handleCartAdded } = useContext(CartContext);
   const [product, setProduct] = useState([]);
 
+  const [relatedProducts, setRelatedProducts] = useState([]);
+
   useEffect(() => {
     fetch(`https://ira-fashion-server.onrender.com/products/${id}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
-  }, []);
+  }, [id]);
+
+  // Fetch related products based on category
+  useEffect(() => {
+    if (product.category) {
+      fetch(`https://ira-fashion-server.onrender.com/products/${id}/related`)
+        .then((res) => res.json())
+        .then((data) => setRelatedProducts(data));
+    }
+  }, [product]);
+  console.log(relatedProducts);
+
   const { _id, name, photoUrl, price, des } = product;
 
   return (
@@ -51,9 +64,10 @@ const SingleProduct = ({ params }) => {
                   <svg
                     fill="currentColor"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeL
+                    inejoin="round"
+                    strokeWidth="2"
                     class="w-4 h-4 text-pink-500"
                     viewBox="0 0 24 24"
                   >
@@ -62,9 +76,10 @@ const SingleProduct = ({ params }) => {
                   <svg
                     fill="currentColor"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeL
+                    inejoin="round"
+                    strokeWidth="2"
                     class="w-4 h-4 text-pink-500"
                     viewBox="0 0 24 24"
                   >
@@ -73,9 +88,10 @@ const SingleProduct = ({ params }) => {
                   <svg
                     fill="currentColor"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeL
+                    inejoin="round"
+                    strokeWidth="2"
                     class="w-4 h-4 text-pink-500"
                     viewBox="0 0 24 24"
                   >
@@ -84,9 +100,10 @@ const SingleProduct = ({ params }) => {
                   <svg
                     fill="currentColor"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeL
+                    inejoin="round"
+                    strokeWidth="2"
                     class="w-4 h-4 text-pink-500"
                     viewBox="0 0 24 24"
                   >
@@ -95,9 +112,10 @@ const SingleProduct = ({ params }) => {
                   <svg
                     fill="none"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeL
+                    inejoin="round"
+                    strokeWidth="2"
                     class="w-4 h-4 text-pink-500"
                     viewBox="0 0 24 24"
                   >
@@ -109,9 +127,10 @@ const SingleProduct = ({ params }) => {
                   <a class="text-gray-500">
                     <svg
                       fill="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeL
+                      inejoin="round"
+                      strokeWidth="2"
                       class="w-5 h-5"
                       viewBox="0 0 24 24"
                     >
@@ -121,9 +140,10 @@ const SingleProduct = ({ params }) => {
                   <a class="text-gray-500">
                     <svg
                       fill="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeL
+                      inejoin="round"
+                      strokeWidth="2"
                       class="w-5 h-5"
                       viewBox="0 0 24 24"
                     >
@@ -133,9 +153,10 @@ const SingleProduct = ({ params }) => {
                   <a class="text-gray-500">
                     <svg
                       fill="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeL
+                      inejoin="round"
+                      strokeWidth="2"
                       class="w-5 h-5"
                       viewBox="0 0 24 24"
                     >
@@ -165,9 +186,9 @@ const SingleProduct = ({ params }) => {
                       <svg
                         fill="none"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         class="w-4 h-4"
                         viewBox="0 0 24 24"
                       >
@@ -190,9 +211,9 @@ const SingleProduct = ({ params }) => {
                 <button class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
                     fill="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     class="w-5 h-5"
                     viewBox="0 0 24 24"
                   >
@@ -200,6 +221,30 @@ const SingleProduct = ({ params }) => {
                   </svg>
                 </button>
               </div>
+            </div>
+          </div>
+          <div className="related-products">
+            <h2 className="text-xl font-semibold mb-4">Related Products</h2>
+            <div className="grid grid-cols-4 gap-4">
+              {relatedProducts.map((relatedProduct) => (
+                <div
+                  key={relatedProduct._id}
+                  className="related-product border p-4 rounded-lg"
+                >
+                  <img
+                    src={relatedProduct.photoUrl}
+                    alt={relatedProduct.name}
+                    className="object-contain h-48 w-full mb-2"
+                  />
+                  <h3 className="text-lg">{relatedProduct.name}</h3>
+                  <p>${relatedProduct.price}</p>
+                  <Link href={`/product/${relatedProduct._id}`}>
+                    <button className="mt-2 text-white bg-pink-500 px-4 py-2 rounded">
+                      View
+                    </button>
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
         </div>

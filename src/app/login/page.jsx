@@ -15,10 +15,10 @@ const Login = () => {
   //   router.push("/cart"); // Redirecting to /cart route
   // }
   return (
-    <div className=" py-8 px-2">
+    <div className=" py-8 px-2 h-screen">
       <div className="flex flex-col items-center gap-4  ">
         {user.length === 0 ? (
-          <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800">
+          <div className="w-full max-w-md p-8 space-y-3 rounded-xl shadow dark:bg-gray-50 dark:text-gray-800">
             <h1 className="text-2xl font-bold text-center">Login</h1>
             <form noValidate="" action="" className="space-y-6">
               <div className="space-y-1 text-sm">

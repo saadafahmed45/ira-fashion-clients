@@ -49,7 +49,7 @@ const CartPage = () => {
   console.log(allData);
 
   return (
-    <div className="flex justify-center px-8 md:px-24 py-8">
+    <div className="flex justify-center px-4 md:px-24 py-8">
       <div className="font-[sans-serif] bg-white">
         <div className="lg:max-w-7xl max-w-xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#333]">

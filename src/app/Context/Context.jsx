@@ -9,20 +9,43 @@ import { toast } from "react-toastify";
 export const CartContext = createContext([]);
 
 const ContextProvider = ({ children }) => {
+  const [user, setUser] = useState([]);
+
   const [cartItems, setCartItems] = useState([]);
 
-  // add cart fun
+  // add to cart function
   function handleCartAdded(getCurrentItem) {
+    if (!user) {
+      toast.error("You need to be logged in to add items to the cart.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
     let copyCartItems = [...cartItems];
     const indexOfCurrentItem = copyCartItems.findIndex(
       (item) => item._id === getCurrentItem._id
     );
-    console.log(copyCartItems);
+
     if (indexOfCurrentItem === -1) {
       copyCartItems.push(getCurrentItem);
     }
+
     setCartItems(copyCartItems);
-    localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
+
+    // Save the cart items to localStorage only if a user is logged in
+    localStorage.setItem(
+      `cartItems_${user.uid}`,
+      JSON.stringify(copyCartItems)
+    );
+
     toast.success("Product added to cart", {
       position: "bottom-right",
       autoClose: 3000,
@@ -35,14 +58,34 @@ const ContextProvider = ({ children }) => {
     });
   }
 
-  // remove to cart
+  // remove from cart function
   function removeFromCart(getCurrentItem) {
-    // console.log(getCurrentItem);
+    if (!user) {
+      toast.error("You need to be logged in to remove items from the cart.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
     let copyCartItems = [...cartItems];
     copyCartItems = copyCartItems.filter((item) => item._id !== getCurrentItem);
+
     setCartItems(copyCartItems);
-    localStorage.setItem("cartItems", JSON.stringify(copyCartItems));
-    toast.warn("Product Removed to cart", {
+
+    // Save the updated cart items to localStorage only if a user is logged in
+    localStorage.setItem(
+      `cartItems_${user.uid}`,
+      JSON.stringify(copyCartItems)
+    );
+
+    toast.warn("Product removed from cart", {
       position: "bottom-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -53,11 +96,16 @@ const ContextProvider = ({ children }) => {
       theme: "light",
     });
   }
-  // localStorage save
-  useEffect(() => {
-    setCartItems(JSON.parse(localStorage.getItem("cartItems")) || []);
-  }, []);
 
+  // Load cart items from localStorage when user logs in
+  useEffect(() => {
+    if (user) {
+      setCartItems(
+        JSON.parse(localStorage.getItem(`cartItems_${user.uid}`)) || []
+      );
+    }
+  }, [user]);
+  
   const [quantities, setQuantities] = useState([]);
   // Calculate subtotal
   const subtotal = cartItems.reduce(
@@ -89,7 +137,6 @@ const ContextProvider = ({ children }) => {
   const provider = new GoogleAuthProvider();
   const auth = getAuth(app);
 
-  const [user, setUser] = useState([]);
 
   const handleGoogleSign = () => {
     signInWithPopup(auth, provider)
