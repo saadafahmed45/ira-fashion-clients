@@ -34,7 +34,9 @@ const ProductCard = ({ pd }) => {
           </button>
         </div>
         <div className="p-4">
-          <h3 className="font-semibold text-lg mb-2"> {name}</h3>
+          <Link href={`/product/${_id}`}>
+            <h3 className="font-semibold text-lg mb-2 hover:underline"> {name}</h3>
+          </Link>
           <p className="text-gray-600"> ${price}</p>
         </div>
       </div>
