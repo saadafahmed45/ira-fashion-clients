@@ -13,9 +13,8 @@ export default function Home() {
       {/* <Heros /> */}
       <Hero />
       <NewAravel />
-      <div className="divider">Products</div>
-
-      <Product />
+      {/* <div className="divider">Products</div> */}
+      {/* <Product /> */}
       <Testimonial />
       <Future />
       {/* <PdGallery /> */}
