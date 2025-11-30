@@ -1,174 +1,148 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { CartContext } from "../Context/Context";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { MdOutlineDelete } from "react-icons/md";
-// import { metadata } from "../layout";
 
 const CartPage = () => {
   const {
     cartItems,
     removeFromCart,
-    user,
     quantities,
     setQuantities,
     subtotal,
     totalPrice,
   } = useContext(CartContext);
 
-  // // Shipping cost
-  const shippingCost = 10; // You can adjust this value as needed
-  const tax = 4; // You can adjust this value as needed
+  const shippingCost = 10;
+  const tax = 4;
 
-  // Increase and decrease quantity
   const increaseQuantity = (itemId) => {
-    const item = (prevQuantities) => ({
-      ...prevQuantities, //current value
-      [itemId]: (prevQuantities[itemId] || 1) + 1,
-    });
-    setQuantities(item);
+    setQuantities((prev) => ({
+      ...prev,
+      [itemId]: (prev[itemId] || 1) + 1,
+    }));
   };
 
   const decreaseQuantity = (itemId) => {
-    if (quantities[itemId] > 1) {
-      setQuantities((prevQuantities) => ({
-        ...prevQuantities,
-        [itemId]: prevQuantities[itemId] - 1,
-      }));
-    }
+    setQuantities((prev) => ({
+      ...prev,
+      [itemId]: Math.max((prev[itemId] || 1) - 1, 1),
+    }));
   };
 
-  // Auth system
-  const myUser = user.emailVerified;
-  if (!myUser) {
-    redirect("/login");
-  }
-
-  const allData = [...cartItems, quantities];
-  console.log(allData);
-
   return (
-    <div className="flex justify-center px-4 md:px-24 py-8">
-      <div className="font-[sans-serif] bg-white">
-        <div className="lg:max-w-7xl max-w-xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#333]">
-            Shopping Cart
-          </h2>
-          <div className="text-sm breadcrumbs m-2">
-            <ul>
-              <li>
-                <Link href={"/"}>Home</Link>
-              </li>
-              <li>
-                <a className="font-semibold">Cart Details</a>
-              </li>
-            </ul>
-          </div>
-          <div className="grid lg:grid-cols-3 gap-8 items-start mt-8">
-            <div className="divide-y lg:col-span-2">
-              {cartItems.map((item) => (
+    <div className="min-h-screen bg-gray-50 px-4 md:px-24 py-8">
+      <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+        Shopping Cart
+      </h2>
+
+      {cartItems.length === 0 ? (
+        <div className="text-center text-gray-500 mt-16 text-xl">
+          Your cart is empty
+          <Link href="/product" className="ml-2 text-blue-600 hover:underline">
+            Browse Products
+          </Link>
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 divide-y bg-white p-6 rounded-lg shadow space-y-4">
+            {cartItems.map((item) => {
+              const itemPrice = Number(item.price);
+              const quantity = quantities[item._id] || 1;
+
+              return (
                 <div
                   key={item._id}
-                  className="flex flex-col md:flex-row items-start justify-between gap-4 py-8"
+                  className="flex flex-col md:flex-row items-center md:items-start gap-4 py-4"
                 >
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className=" h-40 md:h-64 bg-gray-100 p-2   rounded">
-                      <img
-                        src={item.photoUrl}
-                        className="w-full h-full  object-contain shrink-0"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-md font-bold text-[#333]">
-                        {item.name}
-                      </p>
+                  {/* Product Image */}
+                  <div className="w-40 h-40 bg-gray-100 p-2 rounded">
+                    <img
+                      src={item.photoUrl}
+                      alt={item.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
 
-                      <p className="text-gray-400 text-xs mt-1">
-                        {quantities[item._id] || 1} Item
-                      </p>
-                      <meta
-                        name="description"
-                        content="Check out iPhone 12 XR Pro and iPhone 12 Pro Max. Visit your local store and for expert advice."
-                        key="desc"
-                      />
-                      <h4 className="text-xl font-bold text-[#333] mt-4">
-                        ${(item.price * (quantities[item._id] || 1)).toFixed(2)}
-                      </h4>
-                      <div className="mt-6">
-                        <button
-                          type="button"
-                          className="flex flex-wrap gap-2 text-xl text-[#333]"
-                        >
-                          <span
-                            className="bg-gray-100 px-2 py-1 rounded"
-                            onClick={() => decreaseQuantity(item._id)}
-                          >
-                            -
-                          </span>
-                          <span className="mx-4">
-                            {quantities[item._id] || 1}
-                          </span>
-                          <span
-                            className="bg-gray-100 px-2 py-1 rounded"
-                            onClick={() => increaseQuantity(item._id)}
-                          >
-                            +
-                          </span>
-                        </button>
-                      </div>
+                  {/* Product Details */}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {item.name}
+                    </h3>
+                    <p className="text-gray-500 mt-1">
+                      ${itemPrice.toFixed(2)} each
+                    </p>
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center mt-4 gap-2">
+                      <button
+                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        onClick={() => decreaseQuantity(item._id)}
+                      >
+                        -
+                      </button>
+                      <span className="px-3 py-1">{quantity}</span>
+                      <button
+                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        onClick={() => increaseQuantity(item._id)}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
-                  <button onClick={() => removeFromCart(item._id)}>
-                    <span className="m-2">Remove</span>
 
-                    <MdOutlineDelete className=" text-2xl fill-red-500 inline cursor-pointer" />
-                  </button>
+                  {/* Remove Button & Total */}
+                  <div className="flex flex-col items-end gap-2">
+                    <span className="text-xl font-bold text-gray-900">
+                      ${(itemPrice * quantity).toFixed(2)}
+                    </span>
+                    <button
+                      onClick={() => removeFromCart(item._id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <MdOutlineDelete size={24} />
+                    </button>
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
 
-            {cartItems.length === 0 ? (
-              <h1>Cart is empty</h1>
-            ) : (
-              <div className="bg-gray-100 p-8">
-                <h3 className="text-2xl font-bold text-[#333]">
-                  Order summary
-                </h3>
-                <ul className="text-[#333] mt-6 divide-y">
-                  <li className="flex flex-wrap gap-4 text-md py-3">
-                    Subtotal{" "}
-                    <span className="ml-auto font-bold">
-                      ${subtotal.toFixed(2)}
-                    </span>
-                  </li>
-                  <li className="flex flex-wrap gap-4 text-md py-3">
-                    Shipping{" "}
-                    <span className="ml-auto font-bold">
-                      ${shippingCost.toFixed(2)}
-                    </span>
-                  </li>
-                  <li className="flex flex-wrap gap-4 text-md py-3">
-                    Tax{" "}
-                    <span className="ml-auto font-bold">${tax.toFixed(2)}</span>
-                  </li>
-                  <li className="flex flex-wrap gap-4 text-md py-3 font-bold">
-                    Total{" "}
-                    <span className="ml-auto">${totalPrice.toFixed(2)}</span>
-                  </li>
-                </ul>
-                <Link
-                  href={"/cart/checkout"}
-                  type="button"
-                  className="mt-6 text-md px-6 py-2.5 w-full bg-[#FF3EA5] hover:bg-[#912760] text-white rounded text-center"
-                >
-                  Check out
-                </Link>
-              </div>
-            )}
+          {/* Order Summary */}
+          <div className="bg-white p-6 rounded-lg shadow space-y-6">
+            <h3 className="text-2xl font-bold text-gray-900">Order Summary</h3>
+            <ul className="space-y-2 text-gray-700">
+              <li className="flex justify-between">
+                <span>Subtotal</span>
+                <span>${Number(subtotal).toFixed(2)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Shipping</span>
+                <span>${shippingCost.toFixed(2)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Tax</span>
+                <span>${tax.toFixed(2)}</span>
+              </li>
+              <li className="flex justify-between font-bold text-gray-900 text-lg">
+                <span>Total</span>
+                <span>
+                  ${Number(totalPrice + shippingCost + tax).toFixed(2)}
+                </span>
+              </li>
+            </ul>
+
+            <Link
+              href="/cart/checkout"
+              className="block text-center w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold rounded"
+            >
+              Proceed to Checkout
+            </Link>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

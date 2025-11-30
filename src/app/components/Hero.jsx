@@ -1,34 +1,37 @@
 import React from "react";
+import Image from "next/image";
 
 const Hero = () => {
   return (
-    <section className="h-full md:h-screen w-[80%] md:w-[90%] flex items-center px-8  md:px-24 ">
-      {/* hero warper */}
-      <div className="flex flex-col md:flex-row items-center justify-between ">
-        {/* hero content  */}
-        <div className="md:flex-1 ">
-          {/* hero content  text sec*/}
+    <section className="relative h-[90vh] w-full flex items-center overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="https://images.pexels.com/photos/3965545/pexels-photo-3965545.jpeg" // add background image in /public
+          alt="Fashion Background"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Dark Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20"></div>
+      </div>
 
-          <div className="flex flex-col  gap-4  mt-8 md:w-[90%]">
-            <h2 className="text-3xl md:text-5xl font-semibold md:font-bold md:w-[78%] ">
-              Unleash Your Style: Dive into Our Exclusive Collection Today!
-            </h2>
-            <p className="text-sm md:text-lg">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Voluptatum voluptates amet reprehenderit unde tempora,
-            </p>
+      {/* Content */}
+      <div className="relative z-10 px-6 md:px-24 w-full text-white">
+        <div className="max-w-2xl space-y-6">
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+            Discover the New Era of Fashion
+          </h1>
 
-            <div>
-              {" "}
-              <button className="text-md  md:text-2xl mt-4  border-2 border-[#FF3EA5] bg-[#FF3EA5] text-white px-3 py-2 hover:bg-white hover:text-[#FF3EA5] ">
-                Shop Now
-              </button>
-            </div>
-          </div>
-        </div>
-        {/* hero img  */}
-        <div className="flex-2 mt-4 ">
-          <img className="h-[310px]  " src="/hero.svg" alt="" />
+          <p className="text-sm md:text-lg text-gray-200">
+            Step into the world of style with trending outfits crafted for
+            comfort, elegance and everyday wear.
+          </p>
+
+          <button className="mt-4 bg-pink-500 hover:bg-pink-600 transition-all text-white font-semibold text-lg px-8 py-3 rounded-lg shadow-lg">
+            Shop Now
+          </button>
         </div>
       </div>
     </section>

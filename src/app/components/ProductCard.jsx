@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React, { useContext } from "react";
@@ -9,77 +10,91 @@ const ProductCard = ({ pd }) => {
   const { _id, name, photoUrl, price } = pd;
   const { cartItems, handleCartAdded } = useContext(CartContext);
 
-  const isInCart = cartItems.some((item) => _id === _id);
+  // FIXED: Correct cart checking
+  const isInCart = cartItems.some((item) => item._id === _id);
 
   return (
-    <div className="space-y-6 py-4">
+    <div className="w-full">
       <div
         key={_id}
-        className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+        className="group w-full bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden hover:shadow-xl hover:border-blue-400 transition-all duration-300"
       >
-        {/* Product Image */}
-        <Link href={`/product/${_id}`} aria-label={`View details of ${name}`}>
-          <Image
-            src={photoUrl}
-            alt={name}
-            width={320}
-            height={240}
-            className="p-2 rounded-t-lg w-full h-60 object-cover"
-          />
-        </Link>
-
-        <div className="px-5 pb-5">
-          {/* Product Name */}
+        {/* Image Section */}
+        <div className="relative w-full h-64 overflow-hidden">
           <Link href={`/product/${_id}`}>
-            <h5 className="text-xl font-semibold tracking-tight text-gray-900 hover:underline">
+            <img
+              src={photoUrl}
+              alt={name}
+              className="rounded-t-2xl w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </Link>
+
+          {/* Wishlist Icon */}
+          <button className="absolute top-3 right-3 p-2 bg-white/80 rounded-full shadow-sm hover:bg-white transition">
+            <Heart size={18} className="text-gray-600 hover:text-red-500" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="px-5 py-4 space-y-2">
+          {/* Title */}
+          <Link href={`/product/${_id}`}>
+            <h5 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition">
               {name}
             </h5>
           </Link>
 
           {/* Rating */}
-          <div className="flex items-center mt-2.5 mb-5">
-            <div className="flex items-center space-x-1 rtl:space-x-reverse">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center text-yellow-400">
               {[...Array(4)].map((_, index) => (
                 <svg
                   key={index}
-                  className="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4"
                   fill="currentColor"
                   viewBox="0 0 22 20"
                 >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                  <path d="M20.924 7.625a1.523...Z" />
                 </svg>
               ))}
               <svg
-                className="w-4 h-4 text-gray-200"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4 text-gray-300"
                 fill="currentColor"
                 viewBox="0 0 22 20"
               >
-                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                <path d="M20.924 7.625a1.523...Z" />
               </svg>
             </div>
-            <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded ms-3">
-              5.0
+
+            <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-[2px] rounded">
+              4.9
             </span>
           </div>
 
-          {/* Price and Add to Cart Button */}
-          <div className="flex items-center justify-between">
-            <span className="text-3xl font-bold text-gray-900">${price}</span>
+          {/* Price + Add to Cart */}
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-2xl font-bold text-gray-900">${price}</span>
+
+            {/* ADD TO CART BUTTON */}
             <button
               onClick={() => handleCartAdded(pd)}
-              className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              className={`
+                flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium 
+                transition-all duration-300 shadow-sm
+                ${
+                  isInCart
+                    ? "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }
+              `}
             >
-              Add to cart
+              <ShoppingCart size={18} />
+              {isInCart ? "Added" : "Add"}
             </button>
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 

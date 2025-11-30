@@ -105,7 +105,7 @@ const ContextProvider = ({ children }) => {
       );
     }
   }, [user]);
-  
+
   const [quantities, setQuantities] = useState([]);
   // Calculate subtotal
   const subtotal = cartItems.reduce(
@@ -136,7 +136,6 @@ const ContextProvider = ({ children }) => {
   // auth
   const provider = new GoogleAuthProvider();
   const auth = getAuth(app);
-
 
   const handleGoogleSign = () => {
     signInWithPopup(auth, provider)
