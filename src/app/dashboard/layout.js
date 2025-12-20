@@ -1,13 +1,10 @@
 import Sidebar from "../components/Sidebar";
 
-export default function DashboardLayout({
-  children, // will be a page or nested layout
-}) {
+export default function DashboardLayout({ children }) {
   return (
-    <section className="flex">
-      {/* Include shared UI here e.g. a header or sidebar */}
+    <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      {children}
-    </section>
+      <main className="flex-1 overflow-x-hidden">{children}</main>
+    </div>
   );
 }

@@ -27,7 +27,8 @@ const fetchRelatedProducts = async (id) => {
 };
 
 const SingleProduct = async ({ params }) => {
-  const { id } = params;
+  // Await params before accessing its properties
+  const { id } = await params;
 
   const product = await fetchProduct(id);
   if (!product) notFound();
@@ -37,94 +38,170 @@ const SingleProduct = async ({ params }) => {
   const { name, photoUrl, price, des } = product;
 
   return (
-    <div className="py-6 md:px-16">
-      <div className="text-gray-600 body-font overflow-hidden">
-        <div className="container px-4 mx-auto">
-          {/* Breadcrumbs */}
-          <div className="text-sm breadcrumbs mb-2 text-gray-500">
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <span className="font-semibold text-gray-700">
-                  Product Details
-                </span>
-              </li>
-            </ul>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 md:py-12">
+      <div className="container px-4 mx-auto max-w-7xl">
+        {/* Breadcrumbs */}
+        <nav className="mb-6">
+          <ol className="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+              <Link href="/" className="hover:text-blue-600 transition-colors">
+                Home
+              </Link>
+            </li>
+            <li className="text-gray-400">/</li>
+            <li className="text-gray-900 font-medium">Product Details</li>
+          </ol>
+        </nav>
 
-          {/* Product Section */}
-          <div className="lg:w-4/5 mx-auto flex flex-wrap py-10 gap-8">
-            <div className="lg:w-1/2 w-full">
-              <img
-                alt={name}
-                className="w-full h-[350px] md:h-[450px] object-contain rounded-lg"
-                src={photoUrl}
-              />
+        {/* Product Section */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
+          <div className="grid lg:grid-cols-2 gap-8 p-6 md:p-10">
+            {/* Image Section */}
+            <div className="relative group">
+              <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-xl overflow-hidden">
+                <img
+                  alt={name}
+                  className="w-full h-[400px] md:h-[500px] object-contain transform group-hover:scale-105 transition-transform duration-500"
+                  src={photoUrl}
+                />
+              </div>
+              <div className="absolute top-4 right-4">
+                <button className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-300">
+                  <Heart className="w-6 h-6 text-red-500" />
+                </button>
+              </div>
             </div>
 
             {/* Product Info */}
-            <div className="lg:w-1/2 w-full space-y-4">
-              <h2 className="text-sm uppercase text-gray-500 tracking-widest">
-                Fashion Brand
-              </h2>
-
-              <h1 className="text-gray-900 text-3xl font-bold">{name}</h1>
-
-              <p className="leading-relaxed text-gray-700">{des}</p>
-
-              <div className="flex items-center gap-6 mt-4">
-                <span className="text-3xl font-semibold text-gray-900">
-                  ${price}
+            <div className="flex flex-col justify-center space-y-6">
+              <div className="space-y-3">
+                <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider uppercase bg-blue-100 text-blue-700 rounded-full">
+                  Fashion Brand
                 </span>
 
-                <CartButton product={product} />
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                  {name}
+                </h1>
               </div>
-            </div>
-          </div>
 
-          {/* Related Products */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-semibold mb-6">Related Products</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{des}</p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-              {relatedProducts.map((rp) => (
-                <div
-                  key={rp._id}
-                  className="bg-white rounded-xl shadow hover:shadow-lg transition p-3 group"
-                >
-                  <div className="relative overflow-hidden rounded-lg">
-                    <Link href={`/product/${rp._id}`}>
-                      <img
-                        src={rp.photoUrl}
-                        alt={rp.name}
-                        className="w-full h-52 object-cover rounded-lg group-hover:scale-105 transition duration-300"
-                      />
-                    </Link>
+              <div className="border-t border-b border-gray-200 py-6">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-4xl font-bold text-gray-900">
+                    ${price}
+                  </span>
+                  <span className="text-gray-500 line-through text-xl">
+                    ${(price * 1.3).toFixed(2)}
+                  </span>
+                  <span className="text-green-600 font-semibold text-sm bg-green-50 px-3 py-1 rounded-full">
+                    Save 30%
+                  </span>
+                </div>
+              </div>
 
-                    {/* Quick Actions */}
-                    <div className="absolute top-2 right-2 flex gap-2">
-                      <button className="bg-white p-1.5 rounded-full shadow hover:bg-gray-100">
-                        <Heart className="w-5 h-5 text-red-500" />
-                      </button>
-                      <button className="bg-white p-1.5 rounded-full shadow hover:bg-gray-100">
-                        <ShoppingCart className="w-5 h-5 text-blue-600" />
-                      </button>
-                    </div>
+              <div className="space-y-4">
+                <CartButton product={product} />
+
+                <div className="grid grid-cols-3 gap-4 pt-4">
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-1">Free Shipping</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      On orders $50+
+                    </p>
                   </div>
-
-                  <div className="mt-3">
-                    <h3 className="font-semibold text-gray-900 text-sm md:text-base">
-                      {rp.name}
-                    </h3>
-                    <p className="text-gray-600 font-medium text-sm md:text-base">
-                      ${rp.price}
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-1">Easy Returns</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      30 days
+                    </p>
+                  </div>
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-1">Warranty</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      1 year
                     </p>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Related Products */}
+        <div>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">
+                You May Also Like
+              </h2>
+              <p className="text-gray-600 mt-1">Discover similar products</p>
+            </div>
+            <Link
+              href="/product"
+              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1 group"
+            >
+              View All
+              <span className="transform group-hover:translate-x-1 transition-transform">
+                →
+              </span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((rp) => (
+              <div
+                key={rp._id}
+                className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden"
+              >
+                <div className="relative overflow-hidden bg-gray-50">
+                  <Link href={`/product/${rp._id}`}>
+                    <img
+                      src={rp.photoUrl}
+                      alt={rp.name}
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </Link>
+
+                  {/* Overlay on hover */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+
+                  {/* Quick Actions */}
+                  <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button className="bg-white p-2.5 rounded-full shadow-lg hover:bg-red-50 hover:scale-110 transition-all duration-300">
+                      <Heart className="w-5 h-5 text-red-500" />
+                    </button>
+                    <button className="bg-white p-2.5 rounded-full shadow-lg hover:bg-blue-50 hover:scale-110 transition-all duration-300">
+                      <ShoppingCart className="w-5 h-5 text-blue-600" />
+                    </button>
+                  </div>
+
+                  {/* Sale Badge */}
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                      SALE
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-2">
+                  <Link href={`/product/${rp._id}`}>
+                    <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors line-clamp-2 min-h-[3rem]">
+                      {rp.name}
+                    </h3>
+                  </Link>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xl font-bold text-gray-900">
+                      ${rp.price}
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-yellow-400">★</span>
+                      <span className="text-sm text-gray-600">4.5</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
