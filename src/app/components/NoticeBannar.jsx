@@ -2,20 +2,12 @@ import React from "react";
 
 const NoticeBannar = () => {
   return (
-    <div>
-      <div className=" px-8 md:px-24 py-2 hidden md:block dark:bg-gray-50 dark:text-gray-800">
-        <div className=" md:flex items-center mx-auto container justify-center md:justify-center py-2">
-          <div>
-            <span>
-              Get up to 50% off your first order + free shipping,&nbsp;
-            </span>
-            <a href="#" rel="noopener noreferrer" className="underline">
-              sign up
-            </a>
-            today!
-          </div>
-        </div>
-      </div>
+    <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 text-white text-center py-2.5 text-sm font-medium">
+      <p className="flex items-center justify-center gap-2">
+        <span className="hidden sm:inline">🎉</span>
+        <span>Free Shipping on Orders Over $50 | Use Code: FREESHIP</span>
+        <span className="hidden sm:inline">🎉</span>
+      </p>
     </div>
   );
 };
