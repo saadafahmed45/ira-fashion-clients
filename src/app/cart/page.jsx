@@ -60,8 +60,8 @@ const CartPage = () => {
                   {/* Product Image */}
                   <div className="w-40 h-40 bg-gray-100 p-2 rounded">
                     <img
-                      src={item.photoUrl}
-                      alt={item.name}
+                      src={item.images?.[0]}
+                      alt={item.title}
                       className="w-full h-full object-contain"
                     />
                   </div>
@@ -69,7 +69,7 @@ const CartPage = () => {
                   {/* Product Details */}
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-900">
-                      {item.name}
+                      {item.title}
                     </h3>
                     <p className="text-gray-500 mt-1">
                       ${itemPrice.toFixed(2)} each

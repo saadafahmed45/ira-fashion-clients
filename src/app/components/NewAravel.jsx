@@ -24,8 +24,8 @@ const NewArrival = async () => {
             <Link href={`/product/${item._id}`}>
               <div className="overflow-hidden rounded-t-xl">
                 <img
-                  src={item.photoUrl}
-                  alt={item.name}
+                  src={item.images[0]}
+                  alt={item.title}
                   className="w-full h-64 object-cover rounded-t-xl hover:scale-110 transition duration-500"
                 />
               </div>
@@ -34,7 +34,7 @@ const NewArrival = async () => {
             <div className="px-5 pb-5 pt-3">
               <Link href={`/product/${item._id}`}>
                 <h5 className="text-lg font-semibold text-gray-900 hover:underline">
-                  {item.name}
+                  {item.title}
                 </h5>
               </Link>
 

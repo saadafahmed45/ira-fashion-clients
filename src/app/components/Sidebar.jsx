@@ -33,9 +33,19 @@ const Sidebar = () => {
       label: "Add Product",
       icon: Plus,
     },
+      {
+      href: "/dashboard/addCollection",
+      label: "Add Collection",
+      icon: Plus,
+    },
     {
       href: "/dashboard/manageProduct",
       label: "Manage Products",
+      icon: Package,
+    },
+     {
+      href: "/dashboard/manageCollections",
+      label: "Manage Collections",
       icon: Package,
     },
     {

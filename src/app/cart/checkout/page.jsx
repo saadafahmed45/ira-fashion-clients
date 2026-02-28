@@ -190,10 +190,10 @@ const CheckOutPage = () => {
                 {cartItems.map((item) => (
                   <li key={item._id} className="flex justify-between">
                     <div className="inline-flex">
-                      <img src={item.photoUrl} alt="" className="max-h-16" />
+                      <img src={item.images?.[0]} alt="" className="max-h-16" />
                       <div className="ml-3">
                         <p className="text-base font-semibold text-white">
-                          {item.name}
+                          {item.title}
                         </p>
                         {/* <p className='text-sm font-medium text-white text-opacity-80'>
                         Pdf, doc Kindle
