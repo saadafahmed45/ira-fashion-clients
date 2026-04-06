@@ -1,221 +1,97 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { getAuth } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut, getAuth } from "firebase/auth";
 import { app } from "../firebase/firebase.init";
 import { toast } from "react-toastify";
 
-export const CartContext = createContext([]);
+export const CartContext = createContext();
 
 const ContextProvider = ({ children }) => {
-  const [user, setUser] = useState([]);
-
+  const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
 
-  // add to cart function
-  function handleCartAdded(getCurrentItem) {
-    if (!user) {
-      toast.error("You need to be logged in to add items to the cart.", {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return;
-    }
+  // ✅ FIX: quantities must be object
+  const [quantities, setQuantities] = useState({});
 
-    let copyCartItems = [...cartItems];
-    const indexOfCurrentItem = copyCartItems.findIndex(
-      (item) => item._id === getCurrentItem._id
-    );
-
-    if (indexOfCurrentItem === -1) {
-      copyCartItems.push(getCurrentItem);
-    }
-
-    setCartItems(copyCartItems);
-
-    // Save the cart items to localStorage only if a user is logged in
-    localStorage.setItem(
-      `cartItems_${user.uid}`,
-      JSON.stringify(copyCartItems)
-    );
-
-    toast.success("Product added to cart", {
-      position: "bottom-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  }
-
-  // remove from cart function
-  function removeFromCart(getCurrentItem) {
-    if (!user) {
-      toast.error("You need to be logged in to remove items from the cart.", {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return;
-    }
-
-    let copyCartItems = [...cartItems];
-    copyCartItems = copyCartItems.filter((item) => item._id !== getCurrentItem);
-
-    setCartItems(copyCartItems);
-
-    // Save the updated cart items to localStorage only if a user is logged in
-    localStorage.setItem(
-      `cartItems_${user.uid}`,
-      JSON.stringify(copyCartItems)
-    );
-
-    toast.warn("Product removed from cart", {
-      position: "bottom-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  }
-
-  // Load cart items from localStorage when user logs in
-  useEffect(() => {
-    if (user) {
-      setCartItems(
-        JSON.parse(localStorage.getItem(`cartItems_${user.uid}`)) || []
-      );
-    }
-  }, [user]);
-
-  const [quantities, setQuantities] = useState([]);
-  // Calculate subtotal
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * (quantities[item._id] || 1),
-    0
-  );
-
-  // Shipping cost
-  const shippingCost = 10; // You can adjust this value as needed
-  const tax = 4; // You can adjust this value as needed
-
-  // Calculate total price including shipping
-  const totalPrice = subtotal + shippingCost + tax;
-
-  // order
-  const [orderDetails, setOrderDetails] = useState([]);
-
-  const handleOrder = () => {
-    const newOrder = {
-      user,
-      items: cartItems,
-      totalPrice,
-      orderDate: new Date().toISOString(),
-    };
-    setOrderDetails(newOrder);
-  };
-  console.log(orderDetails);
-  // auth
-  const provider = new GoogleAuthProvider();
   const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
+  // LOGIN
   const handleGoogleSign = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        console.log(user);
-        // ...
-        setUser(user);
-        // console.log(displayName);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        toast.success("You are logged In", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        setUser(result.user);
+        localStorage.setItem("user", JSON.stringify(result.user));
+        toast.success("Login successful");
       })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+      .catch(() => toast.error("Login failed"));
   };
-  // sign out
+
+  // LOGOUT
   const handleSingOut = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        setUser("");
-        localStorage.setItem("user", JSON.stringify(""));
-
-        toast.warn("You are logout", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      })
-      .catch((error) => {
-        // An error happened.
-      });
+    signOut(auth).then(() => {
+      setUser(null);
+      localStorage.removeItem("user");
+      toast.warn("Logged out");
+    });
   };
-  // localStorage save
+
+  // LOAD USER
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")) || []);
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) setUser(savedUser);
   }, []);
+
+  // CART ADD
+  const handleCartAdded = (item) => {
+    if (!user) return toast.error("Login required");
+
+    const exists = cartItems.find((i) => i._id === item._id);
+    if (!exists) {
+      const updated = [...cartItems, item];
+      setCartItems(updated);
+      localStorage.setItem(`cart_${user.uid}`, JSON.stringify(updated));
+      toast.success("Added to cart");
+    }
+  };
+
+  // ✅ FIX REMOVE
+  const removeFromCart = (id) => {
+    const updated = cartItems.filter((item) => item._id !== id);
+    setCartItems(updated);
+    localStorage.setItem(`cart_${user?.uid}`, JSON.stringify(updated));
+  };
+
+  // LOAD CART
+  useEffect(() => {
+    if (user) {
+      const saved = JSON.parse(localStorage.getItem(`cart_${user.uid}`)) || [];
+      setCartItems(saved);
+    }
+  }, [user]);
+
+  // ✅ FIX subtotal
+  const subtotal = cartItems.reduce((sum, item) => {
+    const qty = quantities?.[item._id] || 1;
+    return sum + item.price * qty;
+  }, 0);
+
+  const totalPrice = subtotal + 10 + 4;
+
   return (
     <CartContext.Provider
       value={{
-        handleSingOut,
-        handleGoogleSign,
         user,
+        handleGoogleSign,
+        handleSingOut,
+        cartItems,
         handleCartAdded,
         removeFromCart,
-        cartItems,
-        setCartItems,
         quantities,
         setQuantities,
         subtotal,
         totalPrice,
-        handleOrder,
-        orderDetails,
       }}
     >
       {children}

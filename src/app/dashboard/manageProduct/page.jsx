@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { Search, Edit2, Trash2, Plus, X, Package, RefreshCw, Upload } from "lucide-react";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_API_URL || "https://ira-fashion-server.onrender.com";
 
 const ManageProduct = () => {
   const [products, setProducts] = useState([]);
