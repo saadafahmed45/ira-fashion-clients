@@ -1,7 +1,7 @@
 import axios from "axios";
 import { brand } from "@/config/brand";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://ira-fashion-server.vercel.app/api/v1";
 const TOKEN_KEY = brand.tokenKey;
 
 const api = axios.create({
