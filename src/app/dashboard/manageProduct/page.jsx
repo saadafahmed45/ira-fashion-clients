@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { Search, Edit2, Trash2, Plus, X, Package, RefreshCw, Upload } from "lucide-react";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "https://ira-fashion-server.onrender.com";
+import api from "../../../lib/api";
 
 const ManageProduct = () => {
   const [products, setProducts] = useState([]);
@@ -19,9 +18,8 @@ const ManageProduct = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/products`);
-      const data = await res.json();
-      setProducts(Array.isArray(data) ? data : []);
+      const res = await api.get("/products?limit=100");
+      setProducts(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       toast.error("Failed to fetch products");
     } finally {
@@ -31,10 +29,6 @@ const ManageProduct = () => {
 
   useEffect(() => {
     fetchProducts();
-
-    // ✅ Real-time polling every 10 seconds
-    const interval = setInterval(fetchProducts, 10000);
-    return () => clearInterval(interval);
   }, [fetchProducts]);
 
   useEffect(() => {
@@ -58,9 +52,7 @@ const ManageProduct = () => {
 
   const handleDelete = async (_id) => {
     try {
-      const res = await fetch(`${API}/products/${_id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Delete failed");
-      // ✅ Instant UI update
+      await api.delete(`/products/${_id}`);
       setProducts((prev) => prev.filter((p) => p._id !== _id));
       setDeleteConfirm(null);
       toast.success("Product deleted successfully!");
@@ -297,9 +289,13 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
     title: product.title || "",
     description: product.description || "",
     price: product.price || 0,
+    compareAtPrice: product.compareAtPrice || "",
     productType: product.productType || "",
     vendor: product.vendor || "",
     status: product.status || "draft",
+    barcode: product.barcode || "",
+    weight: product.weight || "",
+    tags: Array.isArray(product.tags) ? product.tags.join(", ") : product.tags || "",
   });
   const [newImages, setNewImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState(product.images || []);
@@ -320,35 +316,34 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // ✅ FIX: Use FormData (multipart) since backend uses multer
     const data = new FormData();
     data.append("title", formData.title);
     data.append("description", formData.description);
     data.append("price", formData.price);
+    data.append("compareAtPrice", formData.compareAtPrice);
     data.append("productType", formData.productType);
     data.append("vendor", formData.vendor);
     data.append("status", formData.status);
+    data.append("barcode", formData.barcode);
+    data.append("weight", formData.weight);
+    data.append("tags", formData.tags);
 
     newImages.forEach((file) => data.append("images", file));
 
     try {
-      const res = await fetch(`${API}/products/${product._id}`, {
-        method: "PUT",
-        body: data,
+      await api.put(`/products/${product._id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Update failed");
 
-      // Return updated product merged with form data
       onUpdate({
         ...product,
         ...formData,
         price: Number(formData.price),
         images: newImages.length > 0 ? imagePreviews : product.images,
       });
-      toast.success("✅ Product updated successfully!");
+      toast.success("Product updated successfully!");
     } catch (err) {
-      toast.error("❌ " + (err.message || "Failed to update product"));
+      toast.error(err.message || "Failed to update product");
     } finally {
       setIsSubmitting(false);
     }
@@ -393,6 +388,10 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
               <input name="price" type="number" value={formData.price} onChange={handleChange} min="0" step="0.01" className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required />
             </div>
             <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Compare-at Price</label>
+              <input name="compareAtPrice" type="number" value={formData.compareAtPrice} onChange={handleChange} min="0" step="0.01" className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            </div>
+            <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Product Type</label>
               <input name="productType" value={formData.productType} onChange={handleChange} className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
             </div>
@@ -401,6 +400,18 @@ const EditProductModal = ({ product, onClose, onUpdate }) => {
               <input name="vendor" value={formData.vendor} onChange={handleChange} className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
             </div>
             <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Barcode (UPC, ISBN)</label>
+              <input name="barcode" value={formData.barcode} onChange={handleChange} className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Weight (kg)</label>
+              <input name="weight" type="number" step="0.01" value={formData.weight} onChange={handleChange} className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Tags (comma separated)</label>
+              <input name="tags" value={formData.tags} onChange={handleChange} className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            </div>
+            <div className="col-span-2">
               <label className="block text-xs font-medium text-gray-600 mb-1">Status</label>
               <select name="status" value={formData.status} onChange={handleChange} className="w-full border border-gray-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                 <option value="draft">Draft</option>

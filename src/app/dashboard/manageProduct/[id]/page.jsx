@@ -8,7 +8,7 @@ const UpdatedProduct = ({ params }) => {
 
   const { _id, name, photoUrl, price, des } = products;
   useEffect(() => {
-    fetch(`http://localhost:5000/products/${id}`)
+    fetch(`https://ira-fashion-server.onrender.com/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);

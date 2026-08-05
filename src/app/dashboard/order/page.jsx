@@ -4,60 +4,70 @@ import React, { useEffect, useState } from "react";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
-    const res = await fetch("https://ira-fashion-server.onrender.com/orders");
-    const data = await res.json();
-    setOrders(data);
+    try {
+      const res = await fetch("https://ira-fashion-server.onrender.com/orders");
+      const data = await res.json();
+
+      console.log("API DATA:", data); // 🔥 debug
+
+      setOrders(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filtered = orders.filter((o) => {
-    return (
-      o.customerName?.toLowerCase().includes(search.toLowerCase()) ||
-      o.email?.toLowerCase().includes(search.toLowerCase())
-    );
-  });
 
+
+  if (loading) {
+    return <p className="p-6">Loading orders...</p>;
+  }
+
+  console.log("Orders:", orders); // 🔥 debug
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Orders</h1>
 
-      <input
-        className="border p-2 mb-4 w-full"
-        placeholder="Search..."
-        onChange={(e) => setSearch(e.target.value)}
-      />
 
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-black text-white">
-            <th>Name</th>
-            <th>Email</th>
-            <th>Products</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {filtered.map((order) => (
-            <tr key={order._id} className="border">
-              <td>{order.customerName}</td>
-              <td>{order.email}</td>
-              <td>
-                {order.products?.map((p) => p.title).join(", ")}
-              </td>
-              <td>${order.totalPrice}</td>
-              <td>{order.status}</td>
+      {orders.length === 0 ? (
+        <p>No orders found</p>
+      ) : (
+        <table className="w-full border">
+          <thead>
+            <tr className="bg-black text-white">
+              <th>Name</th>
+              <th>Email</th>
+              <th>Products</th>
+              <th>Total</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order._id} className="border text-center">
+                <td>{order.customerName || "N/A"}</td>
+                <td>{order.email || "N/A"}</td>
+                <td>
+                  {order.products?.length
+                    ? order.products.map((p) => p.title).join(", ")
+                    : "No products"}
+                </td>
+                <td>${order.totalPrice || 0}</td>
+                <td>{order.status || "pending"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

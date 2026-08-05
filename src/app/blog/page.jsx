@@ -1,55 +1,51 @@
-import Link from "next/link";
-import productApi from "../api/productApi";
+"use client";
 
-const Blog = async () => {
-  const product = await productApi();
-  const { _id, name, photoUrl, price, des } = product;
+import React from "react";
+import Link from "next/link";
+import useProducts from "@/hooks/useProducts";
+
+const Blog = () => {
+  const { data: response, isLoading } = useProducts({ limit: 50, status: "active" });
+  const products = response?.data || [];
+
+  if (isLoading) return <div className="p-24 text-center">Loading...</div>;
+
   return (
-    <div className="h- px-24 py-8">
+    <div className="px-24 py-8">
       Blog
-      <div>Products:{product.length}</div>
-      <div className="grid grid-cols-3 ">
-        {product.map(
-          ({ _id, name, photoUrl, price, description, category }) => (
-            <div
-              key={_id}
-              className="w-[320px] h-[370px] shadow-lg rounded-md   mt-8"
-            >
-              {/* card  */}
-              <div className="flex justify-end m-2">
+      <div>Products:{products.length}</div>
+      <div className="grid grid-cols-3 gap-8">
+        {products.map(({ _id, title, name, photoUrl, images, price, category, productType }) => {
+          const displayName = title || name;
+          const displayImage = images?.[0] || photoUrl;
+          return (
+            <div key={_id} className="w-[320px] h-[370px] shadow-lg rounded-md mt-8">
+              <div className="flex justify-end m-2 relative">
                 <Link href={`/blog/${_id}`}>
-                  <img
-                    className="rounded-md w-[300px] relative left-0 top-0"
-                    // width={80}
-                    // height={80}
-                    src={photoUrl}
-                    alt={name}
-                  />
+                  {displayImage && (
+                    <img
+                      className="rounded-md w-[300px] relative left-0 top-0 h-[220px] object-cover"
+                      src={displayImage}
+                      alt={displayName}
+                    />
+                  )}
                 </Link>
-                <div className="absolute badge badge-secondary ">
-                  {category}
+                <div className="absolute top-2 right-2 badge badge-secondary">
+                  {productType || category}
                 </div>
               </div>
               <div className="p-2 m-2">
-                <div className="flex justify-between ">
-                  <h2 className="text-2xl">{name}</h2>
-                  <title className="text-2xl">{name}</title>
-                  <h3 className="text-xl">$ {price}</h3>
+                <div className="flex justify-between">
+                  <h2 className="text-xl font-bold">{displayName}</h2>
+                  <h3 className="text-xl">${price}</h3>
                 </div>
-                <div className="mt-6 flex justify-between ">
-                  {" "}
-                  {/* <button
-                  className=" border-2 border-[#FF3EA5] bg-white text-[#FF3EA5]  hover:bg-[#FF3EA5] hover:text-white  py-1 px-2"
-                  onClick={() => handleCartAdded(pd)}
-                >
-                  Add to cart
-                </button> */}
-                  <Link href={`/blog/${_id}`}>see more.</Link>
+                <div className="mt-6 flex justify-between">
+                  <Link href={`/blog/${_id}`} className="text-pink-600 hover:underline">see more.</Link>
                 </div>
               </div>
             </div>
-          )
-        )}
+          );
+        })}
       </div>
     </div>
   );

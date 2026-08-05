@@ -1,34 +1,58 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { Upload, Images, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Upload, X, FolderPlus, Loader2, Check, Package, Image as ImageIcon } from "lucide-react";
+import api from "@/lib/api";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const inputCls =
+  "w-full border border-[#E5E5E5] bg-white px-4 py-2.5 rounded-none text-xs text-[#111111] focus:outline-none focus:border-[#111111] transition placeholder:text-[#AAAAAA]";
+const labelCls = "block text-[11px] font-bold text-[#111111] uppercase tracking-wider mb-1.5";
 
-const AddCollection = () => {
+export default function AddCollectionPage() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showProducts, setShowProducts] = useState(false);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // Fetch products using API client
+  const { data: productsData } = useQuery({
+    queryKey: ["products-all-light"],
+    queryFn: async () => {
+      const res = await api.get("/products?limit=100&status=active");
+      return res.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const products = productsData || [];
 
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch(`${API}/products`);
-      const data = await res.json();
-      setProducts(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      const fd = new FormData();
+      fd.append("name", name);
+      fd.append("description", description);
+      if (imageFile) fd.append("image", imageFile);
+      const validIds = selectedProducts.filter(Boolean);
+      fd.append("productIds", JSON.stringify(validIds));
+      return api.post("/collections", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Collection created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      queryClient.invalidateQueries({ queryKey: ["collections-all"] });
+      router.push("/dashboard/manageCollections");
+    },
+    onError: (err) => toast.error(err.message || "Failed to create collection"),
+  });
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -37,163 +61,175 @@ const AddCollection = () => {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const toggleProduct = (productId) => {
+  const toggleProduct = (id) =>
     setSelectedProducts((prev) =>
-      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name || !description || !imageFile) {
-      toast.error("Name, description and image are required!");
-      return;
-    }
-    setIsSubmitting(true);
-
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("image", imageFile);
-    // ✅ FIX: Send as comma-separated string
-    formData.append("productIds", selectedProducts.join(","));
-
-    try {
-      const res = await fetch(`${API}/collections`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to save collection");
-
-      toast.success("✅ Collection created successfully!");
-      setName("");
-      setDescription("");
-      setImageFile(null);
-      setImagePreview(null);
-      setSelectedProducts([]);
-    } catch (err) {
-      toast.error("❌ " + (err.message || "Failed to save collection"));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const saving = createMutation.isPending;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Create Collection</h1>
-          <p className="text-gray-500 mt-1">Group products into a themed collection</p>
+    <div className="min-h-screen bg-[#FAF9F6] p-6 lg:p-8 pb-20">
+      <div className="max-w-3xl mx-auto space-y-6">
+
+        {/* Page Header */}
+        <div className="flex items-center justify-between bg-white border border-[#E5E5E5] p-6">
+          <div>
+            <h1 className="text-xl font-light uppercase tracking-wider text-[#111111]">
+              Create New <span className="font-semibold">Collection</span>
+            </h1>
+            <p className="text-xs text-[#666666] mt-0.5">
+              Organize products into curated luxury collections
+            </p>
+          </div>
+          <FolderPlus className="w-6 h-6 text-[#111111]" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Info */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
-            <h2 className="font-semibold text-gray-800">Collection Details</h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            createMutation.mutate();
+          }}
+          encType="multipart/form-data"
+          className="space-y-6"
+        >
+          {/* Details */}
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-4">
+            <h2 className="text-xs font-bold text-[#111111] uppercase tracking-wider pb-2 border-b border-[#E5E5E5]">
+              Collection Information
+            </h2>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Collection Name *</label>
+              <label className={labelCls}>Collection Name *</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                placeholder="e.g. Summer Collection 2025"
+                className={inputCls}
+                placeholder="e.g. Summer Edition '25"
                 required
               />
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+              <label className={labelCls}>Description *</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition resize-none"
-                placeholder="Describe this collection..."
+                className={`${inputCls} resize-none`}
+                placeholder="Describe this curated collection..."
                 required
               />
             </div>
           </div>
 
-          {/* Image */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-            <h2 className="font-semibold text-gray-800 mb-3">Cover Image *</h2>
+          {/* Cover Image Upload */}
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-4">
+            <h2 className="text-xs font-bold text-[#111111] uppercase tracking-wider pb-2 border-b border-[#E5E5E5]">
+              Cover Banner Image *
+            </h2>
+
             {imagePreview ? (
-              <div className="relative">
-                <img src={imagePreview} className="w-full h-48 object-cover rounded-lg" alt="preview" />
+              <div className="relative border border-[#E5E5E5]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={imagePreview} className="w-full h-56 object-cover" alt="preview" />
                 <button
                   type="button"
                   onClick={() => { setImageFile(null); setImagePreview(null); }}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                  className="absolute top-3 right-3 bg-[#111111] text-white p-1.5 hover:bg-red-600 transition shadow"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
-                <Upload className="w-10 h-10 text-gray-400 mb-2" />
-                <span className="text-sm text-gray-500">Click to upload cover image</span>
+              <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-[#E5E5E5] bg-[#FAF9F6] cursor-pointer hover:border-[#111111] hover:bg-white transition group">
+                <ImageIcon className="w-8 h-8 text-[#AAAAAA] group-hover:text-[#111111] mb-2 transition" />
+                <span className="text-xs font-semibold text-[#111111] uppercase tracking-wider">
+                  Upload Collection Cover Image
+                </span>
+                <span className="text-[10px] text-[#888888] mt-1">Supports JPG, PNG, WebP (Max 5MB)</span>
                 <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" required />
               </label>
             )}
           </div>
 
-          {/* Products Selection */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
+          {/* Select Products */}
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5]">
               <div>
-                <h2 className="font-semibold text-gray-800">Add Products</h2>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {selectedProducts.length > 0 ? `${selectedProducts.length} selected` : "Optional — add products later"}
+                <h2 className="text-xs font-bold text-[#111111] uppercase tracking-wider">
+                  Assigned Products
+                </h2>
+                <p className="text-[10px] text-[#888888] mt-0.5">
+                  {selectedProducts.length > 0
+                    ? `${selectedProducts.length} product(s) selected`
+                    : "Optional — click Browse to link products"}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowProducts(!showProducts)}
-                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                className="text-xs font-bold uppercase tracking-wider text-[#111111] hover:underline"
               >
-                {showProducts ? "Hide" : "Browse Products"}
+                {showProducts ? "Close Grid" : "Browse Products"}
               </button>
             </div>
 
             {showProducts && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-64 overflow-y-auto border border-gray-100 rounded-lg p-3 bg-gray-50">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-72 overflow-y-auto border border-[#E5E5E5] p-3 bg-[#FAF9F6]">
                 {products.length === 0 ? (
-                  <p className="col-span-3 text-center text-sm text-gray-400 py-4">No products available</p>
+                  <p className="col-span-3 text-center text-xs text-[#888888] py-8">
+                    No active products found
+                  </p>
                 ) : (
-                  products.map((product) => (
-                    <div
-                      key={product._id}
-                      onClick={() => toggleProduct(product._id)}
-                      className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
-                        selectedProducts.includes(product._id)
-                          ? "border-indigo-500 ring-2 ring-indigo-200"
-                          : "border-transparent hover:border-gray-300"
-                      }`}
-                    >
-                      <img
-                        src={product.images?.[0] || "/placeholder.png"}
-                        alt={product.title}
-                        className="h-20 w-full object-cover"
-                      />
-                      <div className="p-2 bg-white">
-                        <p className="text-xs text-gray-700 font-medium truncate">{product.title}</p>
-                        <p className="text-xs text-gray-400">${product.price}</p>
+                  products.map((product) => {
+                    const isSelected = selectedProducts.includes(product._id);
+                    return (
+                      <div
+                        key={product._id}
+                        onClick={() => toggleProduct(product._id)}
+                        className={`cursor-pointer border text-left bg-white transition relative group overflow-hidden ${
+                          isSelected ? "border-[#111111] ring-1 ring-[#111111]" : "border-[#E5E5E5] hover:border-[#AAAAAA]"
+                        }`}
+                      >
+                        {isSelected && (
+                          <div className="absolute top-1.5 right-1.5 bg-[#111111] text-white p-0.5 z-10">
+                            <Check className="w-3 h-3" />
+                          </div>
+                        )}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={product.images?.[0] || "/placeholder.png"}
+                          alt={product.title}
+                          className="h-24 w-full object-cover"
+                        />
+                        <div className="p-2 border-t border-[#E5E5E5]">
+                          <p className="text-xs font-semibold text-[#111111] truncate">{product.title}</p>
+                          <p className="text-[10px] text-[#666666]">${(product.price || 0).toFixed(2)}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             )}
 
             {selectedProducts.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-3">
+              <div className="flex flex-wrap gap-2 pt-2">
                 {selectedProducts.map((id) => {
                   const p = products.find((pr) => pr._id === id);
                   return p ? (
-                    <span key={id} className="flex items-center gap-1 text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
+                    <span
+                      key={id}
+                      className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-[#111111] text-white px-3 py-1"
+                    >
                       {p.title}
-                      <button type="button" onClick={() => toggleProduct(id)}>
+                      <button
+                        type="button"
+                        onClick={() => toggleProduct(id)}
+                        className="hover:text-red-400"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </span>
@@ -206,22 +242,18 @@ const AddCollection = () => {
           {/* Submit */}
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-indigo-600 text-white px-6 py-3.5 rounded-xl hover:bg-indigo-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md"
+            disabled={saving}
+            className="w-full bg-[#111111] text-white py-4 font-bold uppercase tracking-widest text-xs hover:bg-[#222222] transition disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {isSubmitting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                Creating Collection...
-              </>
+            {saving ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Saving Collection...</>
             ) : (
-              "Create Collection"
+              "Publish Collection"
             )}
           </button>
         </form>
+
       </div>
     </div>
   );
-};
-
-export default AddCollection;
+}
