@@ -11,6 +11,7 @@ import { VariantSelector } from "@/features/products/components/VariantSelector"
 import { useProduct } from "@/features/products/hooks/useProducts";
 import { useCartStore } from "@/features/cart/store/cartStore";
 import { useWishlistStore } from "@/features/wishlist/store/wishlistStore";
+import { RelatedProducts } from "@/components/products/RelatedProducts";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -241,6 +242,9 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Related Products Section */}
+        <RelatedProducts currentProductId={activeProduct._id} vendor={activeProduct.vendor} />
       </div>
     </>
   );
