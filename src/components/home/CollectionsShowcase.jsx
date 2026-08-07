@@ -44,7 +44,7 @@ export default function CollectionsShowcase() {
             : collections?.slice(0, 3).map((collection) => (
                 <Link
                   key={collection._id}
-                  href={collection.slug ? `/product?collection=${collection.slug}` : `/product`}
+                  href={`/collections/${collection.slug || (collection.name ? collection.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") : collection._id)}`}
                   className="group relative aspect-[4/3] overflow-hidden rounded-sm bg-surface border"
                 >
                   {collection.imageUrl ? (

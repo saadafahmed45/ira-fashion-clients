@@ -6,10 +6,11 @@ const SingleBlog = ({ params }) => {
 
   const [product, setProduct] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:5000/products/${prID}`)
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://ira-fashion-server.vercel.app/api/v1";
+    fetch(`${API_URL}/products/${prID}`)
       .then((res) => res.json())
       .then((data) => setProduct(data));
-  }, []);
+  }, [prID]);
   const { _id, name, photoUrl, price, des } = product;
 
   return (

@@ -71,6 +71,24 @@ export default function ProductDetailPage() {
     addItem(activeProduct, selectedVariant, quantity);
   };
 
+  const handleVariantChange = (variant) => {
+    setSelectedVariant(variant);
+    if (variant?.image) {
+      const idx = images.findIndex((img) => img === variant.image);
+      if (idx !== -1) {
+        setSelectedImage(idx);
+      } else {
+        setSelectedImage(variant.image);
+      }
+    } else if (variant?.imageIndex !== undefined && images[variant.imageIndex]) {
+      setSelectedImage(variant.imageIndex);
+    }
+  };
+
+  const displayImage = typeof selectedImage === "number"
+    ? (images[selectedImage] || images[0])
+    : (selectedImage || images[0]);
+
   // JSON-LD Product Schema for SEO
   const jsonLd = {
     "@context": "https://schema.org/",
@@ -103,7 +121,7 @@ export default function ProductDetailPage() {
           <div className="flex flex-col gap-4">
             <div className="relative aspect-[3/4] w-full bg-[#F9F9F9] overflow-hidden border border-[#E5E5E5]">
               <Image
-                src={images[selectedImage]}
+                src={displayImage}
                 alt={activeProduct.title}
                 fill
                 priority
@@ -113,17 +131,20 @@ export default function ProductDetailPage() {
 
             {images.length > 1 && (
               <div className="flex gap-3">
-                {images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`relative w-20 aspect-[3/4] border ${
-                      selectedImage === idx ? "border-[#111111]" : "border-[#E5E5E5]"
-                    }`}
-                  >
-                    <Image src={img} alt={`Thumbnail ${idx}`} fill className="object-cover" />
-                  </button>
-                ))}
+                {images.map((img, idx) => {
+                  const isSelected = selectedImage === idx || selectedImage === img;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedImage(idx)}
+                      className={`relative w-20 aspect-[3/4] border ${
+                        isSelected ? "border-[#111111]" : "border-[#E5E5E5]"
+                      }`}
+                    >
+                      <Image src={img} alt={`Thumbnail ${idx}`} fill className="object-cover" />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -165,7 +186,7 @@ export default function ProductDetailPage() {
               <VariantSelector
                 options={activeProduct.options}
                 variants={activeProduct.variants}
-                onVariantChange={setSelectedVariant}
+                onVariantChange={handleVariantChange}
               />
             )}
 

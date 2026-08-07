@@ -2,7 +2,11 @@ import api from "@/lib/api";
 
 export const productService = {
   async getProducts(params = {}) {
-    const response = await api.get("/products", { params });
+    // Strip empty/null/undefined params to keep query string clean
+    const cleanParams = Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== "" && v != null)
+    );
+    const response = await api.get("/products", { params: cleanParams });
     return response;
   },
 

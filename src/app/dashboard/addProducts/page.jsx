@@ -18,7 +18,7 @@ export default function AddProductPage() {
 
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
-  const [variants, setVariants] = useState([{ size: "M", color: "#6366f1", stock: 0, price: 0 }]);
+  const [variants, setVariants] = useState([{ size: "M", color: "#6366f1", stock: 0, price: 0, imageIndex: 0 }]);
   const [status, setStatus] = useState("draft");
   const [selectedCollections, setSelectedCollections] = useState([]);
 
@@ -63,7 +63,7 @@ export default function AddProductPage() {
     setImagePreviews((prev) => prev.filter((_, idx) => idx !== i));
   };
 
-  const addVariant = () => setVariants((v) => [...v, { size: "M", color: "#6366f1", stock: 0, price: 0 }]);
+  const addVariant = () => setVariants((v) => [...v, { size: "M", color: "#6366f1", stock: 0, price: 0, imageIndex: 0 }]);
   const removeVariant = (i) => {
     if (variants.length === 1) return;
     setVariants((v) => v.filter((_, idx) => idx !== i));
@@ -71,7 +71,7 @@ export default function AddProductPage() {
   const updateVariant = (i, field, value) => {
     setVariants((v) => {
       const copy = [...v];
-      copy[i] = { ...copy[i], [field]: field === "stock" || field === "price" ? Number(value) : value };
+      copy[i] = { ...copy[i], [field]: field === "stock" || field === "price" || field === "imageIndex" ? Number(value) : value };
       return copy;
     });
   };
@@ -283,6 +283,24 @@ export default function AddProductPage() {
                         onChange={(e) => updateVariant(i, "price", e.target.value)}
                         className="border border-stone-200 pl-5 pr-2 py-2 rounded-sm text-sm w-full focus:outline-none focus:border-indigo-400"
                       />
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <label className="text-[11px] text-stone-400">Img</label>
+                      <select
+                        value={variant.imageIndex ?? 0}
+                        onChange={(e) => updateVariant(i, "imageIndex", e.target.value)}
+                        className="border border-stone-200 px-2 py-2 rounded-sm text-xs focus:outline-none focus:border-indigo-400 bg-white"
+                      >
+                        {imagePreviews.length === 0 ? (
+                          <option value={0}>Image 1</option>
+                        ) : (
+                          imagePreviews.map((_, imgIdx) => (
+                            <option key={imgIdx} value={imgIdx}>
+                              Image #{imgIdx + 1}
+                            </option>
+                          ))
+                        )}
+                      </select>
                     </div>
                     <button
                       type="button"
