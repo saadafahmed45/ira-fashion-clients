@@ -1,14 +1,10 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { ProductCard } from "@/components/shared/ProductCard";
-import { ProductSkeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
-import { useProducts } from "@/features/products/hooks/useProducts";
+import { getFeaturedProducts } from "@/lib/api/products";
 
 const sampleProducts = [
   {
@@ -47,9 +43,9 @@ const sampleProducts = [
   },
 ];
 
-export default function HomePage() {
-  const { data, isLoading } = useProducts({ limit: 4 });
-  const products = data?.data?.length ? data.data : sampleProducts;
+export default async function HomePage() {
+  const response = await getFeaturedProducts(4);
+  const products = response?.data?.length ? response.data : sampleProducts;
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-[#111111]">
@@ -66,47 +62,27 @@ export default function HomePage() {
         </div>
 
         <div className="relative max-w-4xl mx-auto text-center flex flex-col items-center gap-6 py-20 z-10">
-          <motion.span
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-xs uppercase font-bold tracking-[0.25em] text-[#111111] bg-white/80 backdrop-blur-md px-4 py-1.5 border border-[#E5E5E5]"
-          >
+          <span className="text-xs uppercase font-bold tracking-[0.25em] text-[#111111] bg-white/80 backdrop-blur-md px-4 py-1.5 border border-[#E5E5E5]">
             Autumn / Winter 2026 Collection
-          </motion.span>
+          </span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-6xl font-light tracking-tight text-[#111111] uppercase font-sans leading-tight"
-          >
+          <h1 className="text-4xl sm:text-6xl font-light tracking-tight text-[#111111] uppercase font-sans leading-tight">
             Refined Luxury <br />
             <span className="font-bold">Minimalist Design</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xs sm:text-sm text-[#666666] max-w-lg leading-relaxed"
-          >
+          <p className="text-xs sm:text-sm text-[#666666] max-w-lg leading-relaxed">
             Discover our latest capsule of timeless outerwear, signature fragrances, and handcrafted accessories.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex items-center gap-4 mt-2"
-          >
+          <div className="flex items-center gap-4 mt-2">
             <Link href="/products">
               <Button size="lg" className="flex items-center gap-3">
                 Explore Collection
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -160,19 +136,11 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <ProductSkeleton key={i} />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
       </section>
 
       {/* Banner CTA Section */}

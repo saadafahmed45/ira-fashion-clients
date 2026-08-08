@@ -48,12 +48,15 @@ const DEMO_RELATED_PRODUCTS = [
   },
 ];
 
-export function RelatedProducts({ currentProductId, vendor }) {
-  const { data: response, isLoading } = useProducts({ limit: 8 });
+export function RelatedProducts({ currentProductId, vendor, initialProducts = [] }) {
+  const { data: response, isLoading } = useProducts(
+    { limit: 8, ...(vendor && { vendor }) },
+    { enabled: !initialProducts || initialProducts.length === 0 }
+  );
   const addItem = useCartStore((state) => state.addItem);
   const { toggleWishlist, isInWishlist } = useWishlistStore();
 
-  const fetchedProducts = response?.data || response;
+  const fetchedProducts = initialProducts?.length ? initialProducts : (response?.data || response);
   const productsList = Array.isArray(fetchedProducts) ? fetchedProducts : [];
 
   // Filter out the current active product

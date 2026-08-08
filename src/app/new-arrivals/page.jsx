@@ -1,16 +1,14 @@
-"use client";
-
-import React, { useState } from "react";
-import useProducts from "@/hooks/useProducts";
+import React from "react";
+import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
-import Pagination from "@/components/shared/Pagination";
-import { ProductCardSkeleton } from "@/components/shared/SkeletonLoader";
+import { getProducts } from "@/lib/api/products";
 import { Sparkles } from "lucide-react";
 
-export default function NewArrivalsPage() {
-  const [page, setPage] = useState(1);
+export default async function NewArrivalsPage({ searchParams }) {
+  const resolvedParams = await searchParams;
+  const page = Math.max(Number(resolvedParams?.page) || 1, 1);
 
-  const { data: response, isLoading } = useProducts({
+  const response = await getProducts({
     page,
     limit: 12,
     status: "active",
@@ -18,7 +16,7 @@ export default function NewArrivalsPage() {
   });
 
   const products = response?.data || [];
-  const meta = response?.meta || {};
+  const meta = response?.meta || { page: 1, totalPages: 1 };
 
   return (
     <div className="min-h-screen bg-background py-12 px-4 md:px-16">
@@ -31,13 +29,7 @@ export default function NewArrivalsPage() {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <ProductCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : products.length === 0 ? (
+        {products.length === 0 ? (
           <div className="text-center py-20 text-stone-500">
             No new arrivals yet. Check back soon!
           </div>
@@ -48,13 +40,38 @@ export default function NewArrivalsPage() {
                 <ProductCard key={product._id} pd={product} />
               ))}
             </div>
-            <Pagination
-              currentPage={page}
-              totalPages={meta.totalPages || 1}
-              onPageChange={setPage}
-              hasNextPage={meta.hasNextPage}
-              hasPrevPage={meta.hasPrevPage}
-            />
+
+            {meta.totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 pt-8 border-t border-stone-200">
+                {meta.hasPrevPage ? (
+                  <Link
+                    href={`/new-arrivals?page=${page - 1}`}
+                    className="px-4 py-2 text-xs font-semibold uppercase tracking-wider border border-stone-300 hover:bg-stone-100"
+                  >
+                    ← Previous
+                  </Link>
+                ) : (
+                  <span className="px-4 py-2 text-xs font-semibold uppercase tracking-wider border border-stone-200 text-stone-300 cursor-not-allowed">
+                    ← Previous
+                  </span>
+                )}
+                <span className="text-xs text-stone-600">
+                  Page {meta.page} of {meta.totalPages}
+                </span>
+                {meta.hasNextPage ? (
+                  <Link
+                    href={`/new-arrivals?page=${page + 1}`}
+                    className="px-4 py-2 text-xs font-semibold uppercase tracking-wider border border-stone-300 hover:bg-stone-100"
+                  >
+                    Next →
+                  </Link>
+                ) : (
+                  <span className="px-4 py-2 text-xs font-semibold uppercase tracking-wider border border-stone-200 text-stone-300 cursor-not-allowed">
+                    Next →
+                  </span>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
