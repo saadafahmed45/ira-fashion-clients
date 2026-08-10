@@ -86,7 +86,7 @@ export function RelatedProducts({ currentProductId, vendor, initialProducts = []
 
       {/* Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="animate-pulse flex flex-col gap-3">
               <div className="w-full aspect-[3/4] bg-[#F1F1F1]" />
@@ -96,7 +96,7 @@ export function RelatedProducts({ currentProductId, vendor, initialProducts = []
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {displayProducts.map((product) => {
             const isWishlisted = isInWishlist(product._id);
             const mainImg =
