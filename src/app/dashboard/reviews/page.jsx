@@ -1,117 +1,152 @@
 "use client";
 
-import React from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../../lib/api";
-import { toast } from "react-toastify";
-import { CheckCircle, XCircle, Star } from "lucide-react";
-import { TableRowSkeleton } from "../../../components/shared/SkeletonLoader";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Star, Trash2, CheckCircle2, MessageSquare } from "lucide-react";
+import api from "@/lib/api";
+import { formatDate } from "@/lib/utils";
+import Badge from "@/components/ui/Badge";
+import Skeleton from "@/components/ui/Skeleton";
 
-export default function AdminReviewsPage() {
-  const queryClient = useQueryClient();
+export default function DashboardReviewsPage() {
+  const [page, setPage] = useState(1);
+  const [msg, setMsg] = useState("");
 
-  const { data: reviews = [], isLoading } = useQuery({
-    queryKey: ["admin-reviews"],
+  const { data: reviewsData, isLoading, refetch } = useQuery({
+    queryKey: ["adminReviews", page],
     queryFn: async () => {
-      const res = await api.get("/admin/reviews");
-      return res.data;
+      const res = await api.get("/reviews", { params: { page, limit: 15 } });
+      return res;
     },
   });
 
-  const reviewMutation = useMutation({
-    mutationFn: async ({ id, status }) => api.put(`/admin/reviews/${id}`, { status }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-      toast.success("Review status updated");
-    },
-    onError: (err) => toast.error(err.message || "Failed to update review"),
-  });
+  const reviews = reviewsData?.data || [];
+  const meta = reviewsData?.meta || { total: 0, page: 1, totalPages: 1 };
 
-  const statusBadge = {
-    pending: "bg-amber-100 text-amber-700",
-    approved: "bg-emerald-100 text-emerald-700",
-    rejected: "bg-red-100 text-red-600",
+  const handleToggleApproval = async (id) => {
+    try {
+      await api.put(`/reviews/${id}/approval`);
+      setMsg("Review approval updated");
+      refetch();
+      setTimeout(() => setMsg(""), 3000);
+    } catch (err) {
+      alert(err.message || "Failed to update review approval");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this review?")) return;
+    try {
+      await api.delete(`/reviews/${id}`);
+      setMsg("Review deleted");
+      refetch();
+      setTimeout(() => setMsg(""), 3000);
+    } catch (err) {
+      alert(err.message || "Failed to delete review");
+    }
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 max-w-[1200px] mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold text-stone-900">Reviews</h1>
-        <p className="text-stone-500 text-sm">{reviews.filter((r) => r.status === "pending").length} pending moderation</p>
+    <div className="p-6 sm:p-10 space-y-6 max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+        <div>
+          <span className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-semibold block mb-1">
+            Reputation & Feedback
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl text-gray-900 font-bold uppercase tracking-wider">
+            Review Moderation
+          </h1>
+        </div>
+
+        <span className="text-xs text-gray-500 font-medium">
+          Total Reviews: {meta.total}
+        </span>
       </div>
 
-      <div className="bg-white border border-stone-100 rounded-sm shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-stone-50 border-b border-stone-100">
-              {["Product", "Reviewer", "Rating", "Review", "Status", "Verified", "Actions"].map((h) => (
-                <th key={h} className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">{h}</th>
-              ))}
+      {msg && (
+        <div className="p-3 bg-emerald-50 text-emerald-800 text-xs border border-emerald-200 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <span>{msg}</span>
+        </div>
+      )}
+
+      <div className="bg-white border border-gray-100 shadow-xs overflow-x-auto">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-gray-50/70 border-b border-gray-100 text-gray-400 uppercase tracking-wider text-[10px]">
+            <tr>
+              <th className="px-6 py-3 font-semibold">Garment</th>
+              <th className="px-6 py-3 font-semibold">Customer</th>
+              <th className="px-6 py-3 font-semibold">Rating</th>
+              <th className="px-6 py-3 font-semibold">Comment</th>
+              <th className="px-6 py-3 font-semibold">Status</th>
+              <th className="px-6 py-3 font-semibold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-50">
+          <tbody className="divide-y divide-gray-100">
             {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => <TableRowSkeleton key={i} cols={7} />)
+              <tr>
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                  Loading reviews...
+                </td>
+              </tr>
             ) : reviews.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-16">
-                  <Star size={40} className="mx-auto text-stone-300 mb-3" strokeWidth={1} />
-                  <p className="text-stone-400 text-sm">No reviews yet</p>
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  No customer reviews found.
                 </td>
               </tr>
             ) : (
-              reviews.map((review) => (
-                <tr key={review._id} className="hover:bg-stone-50/50 transition-colors align-top">
-                  <td className="px-5 py-3.5">
-                    <p className="text-xs font-medium text-stone-800 max-w-[120px] line-clamp-2">
-                      {review.productId?.title || "—"}
-                    </p>
+              reviews.map((r) => (
+                <tr key={r._id} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-gray-900 max-w-xs truncate">
+                    {r.product?.name || "Garment"}
                   </td>
-                  <td className="px-5 py-3.5">
-                    <p className="text-xs font-medium text-stone-700">{review.userId?.name || "—"}</p>
-                    <p className="text-[10px] text-stone-400">{review.userId?.email}</p>
+                  <td className="px-6 py-4">
+                    <p className="font-semibold text-gray-900">{r.user?.name || "Customer"}</p>
+                    <p className="text-[11px] text-gray-400">{r.user?.email}</p>
                   </td>
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} size={12} className={i < review.rating ? "text-amber-400 fill-amber-400" : "text-stone-300"} />
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-0.5 text-amber-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-3 h-3 ${
+                            i < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-200"
+                          }`}
+                        />
                       ))}
                     </div>
                   </td>
-                  <td className="px-5 py-3.5">
-                    {review.title && <p className="text-xs font-semibold text-stone-800">{review.title}</p>}
-                    <p className="text-xs text-stone-500 max-w-[200px] line-clamp-3">{review.body}</p>
-                  </td>
-                  <td className="px-5 py-3.5">
-                    <span className={`px-2.5 py-1 rounded-sm text-[10px] font-semibold uppercase ${statusBadge[review.status]}`}>
-                      {review.status}
+                  <td className="px-6 py-4 text-gray-600 max-w-sm">
+                    <p className="line-clamp-2">{r.comment}</p>
+                    <span className="text-[10px] text-gray-400 block mt-0.5">
+                      {formatDate(r.createdAt)}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5">
-                    <span className={`text-[10px] font-semibold ${review.isVerifiedPurchase ? "text-emerald-600" : "text-stone-400"}`}>
-                      {review.isVerifiedPurchase ? "✓ Verified" : "Unverified"}
-                    </span>
+                  <td className="px-6 py-4">
+                    <Badge variant={r.isApproved ? "success" : "default"}>
+                      {r.isApproved ? "Approved" : "Hidden"}
+                    </Badge>
                   </td>
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-2">
-                      {review.status !== "approved" && (
-                        <button
-                          onClick={() => reviewMutation.mutate({ id: review._id, status: "approved" })}
-                          className="p-1.5 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-sm transition"
-                          title="Approve"
-                        >
-                          <CheckCircle size={17} />
-                        </button>
-                      )}
-                      {review.status !== "rejected" && (
-                        <button
-                          onClick={() => reviewMutation.mutate({ id: review._id, status: "rejected" })}
-                          className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-sm transition"
-                          title="Reject"
-                        >
-                          <XCircle size={17} />
-                        </button>
-                      )}
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleToggleApproval(r._id)}
+                        className={`px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider rounded transition-colors ${
+                          r.isApproved
+                            ? "text-gray-600 hover:bg-gray-100"
+                            : "text-emerald-700 hover:bg-emerald-50"
+                        }`}
+                      >
+                        {r.isApproved ? "Hide" : "Approve"}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(r._id)}
+                        className="p-1 text-gray-400 hover:text-red-600 rounded transition-colors"
+                        title="Delete review"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </td>
                 </tr>

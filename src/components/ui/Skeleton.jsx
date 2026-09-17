@@ -21,3 +21,5 @@ export function ProductSkeleton() {
     </div>
   );
 }
+
+export default Skeleton;

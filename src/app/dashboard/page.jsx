@@ -1,216 +1,212 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { DollarSign, ShoppingBag, Package, Users, Plus, ShieldAlert, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { DollarSign, ShoppingBag, Package, Users, ArrowUpRight, TrendingUp } from "lucide-react";
 import api from "@/lib/api";
+import { formatPrice, formatDate } from "@/lib/utils";
+import DashboardCharts from "@/components/dashboard/DashboardCharts";
+import Badge from "@/components/ui/Badge";
+import Skeleton from "@/components/ui/Skeleton";
 
-const sampleAnalytics = {
-  summary: {
-    totalRevenue: 14850.0,
-    totalOrders: 42,
-    totalProducts: 18,
-    totalCustomers: 35,
-  },
-  salesChart: [
-    { date: "Mon", sales: 1200, orders: 4 },
-    { date: "Tue", sales: 1800, orders: 6 },
-    { date: "Wed", sales: 2400, orders: 8 },
-    { date: "Thu", sales: 1500, orders: 5 },
-    { date: "Fri", sales: 3200, orders: 11 },
-    { date: "Sat", sales: 2900, orders: 9 },
-    { date: "Sun", sales: 1850, orders: 6 },
-  ],
-  recentOrders: [
-    { _id: "ord-1", orderNumber: "IRA-948123", customer: { name: "Sophia Lauren" }, pricing: { total: 240.0 }, status: "processing" },
-    { _id: "ord-2", orderNumber: "IRA-948124", customer: { name: "Alexander Wright" }, pricing: { total: 120.0 }, status: "delivered" },
-    { _id: "ord-3", orderNumber: "IRA-948125", customer: { name: "Emma Watson" }, pricing: { total: 395.0 }, status: "pending" },
-  ],
-};
+export default function DashboardOverviewPage() {
+  const { data: analyticsData, isLoading } = useQuery({
+    queryKey: ["adminAnalytics"],
+    queryFn: async () => {
+      const res = await api.get("/users/admin/analytics");
+      return res.data;
+    },
+  });
 
-export default function AdminDashboardPage() {
-  const { user, isAdmin, loading: authLoading } = useAuth();
-  const [data, setData] = useState(sampleAnalytics);
+  const summary = analyticsData?.summary || {
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalProducts: 0,
+    totalUsers: 0,
+  };
 
-  useEffect(() => {
-    async function fetchAnalytics() {
-      try {
-        const res = await api.get("/admin/analytics");
-        if (res?.data) {
-          setData(res.data);
-        }
-      } catch (err) {
-        console.warn("[Admin] Using local analytics fallback:", err.message);
-      }
-    }
-    if (user && isAdmin) {
-      fetchAnalytics();
-    }
-  }, [user, isAdmin]);
+  const recentOrders = analyticsData?.recentOrders || [];
+  const chartData = analyticsData?.chartData || [];
 
-  if (authLoading) {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 bg-[#F9F9F9]">
-        <Loader2 className="w-8 h-8 text-[#111111] animate-spin" />
-        <span className="text-xs uppercase font-semibold tracking-wider text-[#666666]">
-          Verifying Admin Credentials...
-        </span>
-      </div>
-    );
-  }
-
-  if (!user || !isAdmin) {
-    return (
-      <div className="max-w-md mx-auto py-24 px-4 text-center flex flex-col items-center gap-4">
-        <ShieldAlert className="w-12 h-12 text-red-500" />
-        <h1 className="text-xl font-bold uppercase text-[#111111]">Admin Access Required</h1>
-        <p className="text-xs text-[#666666]">
-          You must be logged in as an administrator to view this page. (Logged in as: {user?.email || "Guest"})
-        </p>
-        <Link href="/login">
-          <Button variant="outline" size="md">Login As Admin</Button>
-        </Link>
-      </div>
-    );
-  }
-
-  const { summary, salesChart, recentOrders } = data;
+  const cards = [
+    {
+      title: "Total Revenue",
+      value: formatPrice(summary.totalRevenue),
+      subtitle: "Gross non-cancelled volume",
+      icon: DollarSign,
+      color: "text-emerald-600 bg-emerald-50",
+      href: "/dashboard/orders",
+    },
+    {
+      title: "Total Orders",
+      value: summary.totalOrders,
+      subtitle: "All customer checkouts",
+      icon: ShoppingBag,
+      color: "text-amber-600 bg-amber-50",
+      href: "/dashboard/orders",
+    },
+    {
+      title: "Active Products",
+      value: summary.totalProducts,
+      subtitle: "Catalog inventory items",
+      icon: Package,
+      color: "text-indigo-600 bg-indigo-50",
+      href: "/dashboard/products",
+    },
+    {
+      title: "Customers",
+      value: summary.totalUsers,
+      subtitle: "Registered client accounts",
+      icon: Users,
+      color: "text-sky-600 bg-sky-50",
+      href: "/dashboard/customers",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col gap-8">
-        {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 border border-[#E5E5E5]">
+    <div className="p-6 sm:p-10 space-y-10 max-w-7xl mx-auto">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+        <div>
+          <span className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-semibold block mb-1">
+            Store Performance Console
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl text-gray-900 font-bold uppercase tracking-wider">
+            Dashboard Overview
+          </h1>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/products"
+            className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold uppercase tracking-wider hover:bg-gray-800 transition-colors"
+          >
+            + Add Product
+          </Link>
+          <Link
+            href="/dashboard/orders"
+            className="px-4 py-2 border border-gray-300 text-gray-800 text-xs font-semibold uppercase tracking-wider hover:bg-gray-50 transition-colors"
+          >
+            View Orders
+          </Link>
+        </div>
+      </div>
+
+      {/* KPI Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {cards.map((card, i) => {
+          const Icon = card.icon;
+          return (
+            <Link
+              key={i}
+              href={card.href}
+              className="bg-white p-6 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-gray-300 transition-colors group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 group-hover:text-gray-900 transition-colors">
+                  {card.title}
+                </span>
+                <div className={`p-2 rounded-xs ${card.color}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+              </div>
+              <div>
+                <span className="text-2xl font-bold text-gray-900 tracking-tight">
+                  {isLoading ? <Skeleton className="h-8 w-24" /> : card.value}
+                </span>
+                <p className="text-[11px] text-gray-400 mt-1">{card.subtitle}</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Analytics Charts */}
+      <div>
+        <DashboardCharts chartData={chartData} />
+      </div>
+
+      {/* Recent Orders Section */}
+      <div className="bg-white border border-gray-100 shadow-xs">
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-light uppercase tracking-wider text-[#111111]">
-              Shopify <span className="font-semibold">Dashboard</span>
-            </h1>
-            <p className="text-xs text-[#666666] mt-0.5">Real-time performance analytics & store overview</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard/products/create">
-              <Button size="md" className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Add Product
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Overview KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white p-6 border border-[#E5E5E5] flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">Total Revenue</span>
-              <h3 className="text-2xl font-bold text-[#111111] mt-1">${summary?.totalRevenue?.toFixed(2)}</h3>
-            </div>
-            <div className="p-3 bg-[#F9F9F9] text-[#111111] border border-[#E5E5E5]">
-              <DollarSign className="w-5 h-5" />
-            </div>
-          </div>
-
-          <div className="bg-white p-6 border border-[#E5E5E5] flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">Total Orders</span>
-              <h3 className="text-2xl font-bold text-[#111111] mt-1">{summary?.totalOrders}</h3>
-            </div>
-            <div className="p-3 bg-[#F9F9F9] text-[#111111] border border-[#E5E5E5]">
-              <ShoppingBag className="w-5 h-5" />
-            </div>
-          </div>
-
-          <div className="bg-white p-6 border border-[#E5E5E5] flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">Total Products</span>
-              <h3 className="text-2xl font-bold text-[#111111] mt-1">{summary?.totalProducts}</h3>
-            </div>
-            <div className="p-3 bg-[#F9F9F9] text-[#111111] border border-[#E5E5E5]">
-              <Package className="w-5 h-5" />
-            </div>
-          </div>
-
-          <div className="bg-white p-6 border border-[#E5E5E5] flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">Customers</span>
-              <h3 className="text-2xl font-bold text-[#111111] mt-1">{summary?.totalCustomers}</h3>
-            </div>
-            <div className="p-3 bg-[#F9F9F9] text-[#111111] border border-[#E5E5E5]">
-              <Users className="w-5 h-5" />
-            </div>
-          </div>
-        </div>
-
-        {/* Recharts Analytics Section */}
-        <div className="bg-white p-6 border border-[#E5E5E5] flex flex-col gap-6">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-[#111111]">
-              Sales Trend (7 Days)
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-900">
+              Recent Customer Orders
             </h3>
-            <span className="text-xs text-[#666666]">Revenue & Volume breakdown</span>
+            <p className="text-[11px] text-gray-500">Latest transactions placed in store</p>
           </div>
-
-          <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={salesChart}>
-                <defs>
-                  <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#111111" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#111111" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E5E5" />
-                <XAxis dataKey="date" stroke="#666666" fontSize={11} tickLine={false} />
-                <YAxis stroke="#666666" fontSize={11} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#111111", color: "#FFFFFF", border: "none", fontSize: "11px" }}
-                />
-                <Area type="monotone" dataKey="sales" stroke="#111111" strokeWidth={2} fillOpacity={1} fill="url(#colorSales)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <Link
+            href="/dashboard/orders"
+            className="text-xs font-semibold text-gray-900 hover:underline uppercase tracking-wider flex items-center gap-1"
+          >
+            All Orders <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
-        {/* Recent Orders Table */}
-        <div className="bg-white p-6 border border-[#E5E5E5] flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-[#111111]">
-              Recent Orders
-            </h3>
-            <Link href="/dashboard/orders" className="text-xs uppercase font-semibold text-[#111111] hover:underline">
-              View All Orders
-            </Link>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-[#E5E5E5] bg-[#F9F9F9] uppercase text-[#666666]">
-                  <th className="py-3 px-4">Order #</th>
-                  <th className="py-3 px-4">Customer</th>
-                  <th className="py-3 px-4">Total</th>
-                  <th className="py-3 px-4">Status</th>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-gray-50/70 border-b border-gray-100 text-gray-400 uppercase tracking-wider text-[10px]">
+              <tr>
+                <th className="px-6 py-3 font-semibold">Order ID</th>
+                <th className="px-6 py-3 font-semibold">Customer</th>
+                <th className="px-6 py-3 font-semibold">Date</th>
+                <th className="px-6 py-3 font-semibold">Payment</th>
+                <th className="px-6 py-3 font-semibold">Status</th>
+                <th className="px-6 py-3 font-semibold text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                    Loading recent orders...
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E5E5E5]">
-                {recentOrders.map((ord) => (
-                  <tr key={ord._id} className="hover:bg-[#F9F9F9]">
-                    <td className="py-3 px-4 font-semibold text-[#111111]">{ord.orderNumber}</td>
-                    <td className="py-3 px-4 text-[#666666]">{ord.customer?.name}</td>
-                    <td className="py-3 px-4 font-medium text-[#111111]">${ord.pricing?.total?.toFixed(2)}</td>
-                    <td className="py-3 px-4">
-                      <Badge variant={ord.status === "delivered" ? "success" : "warning"}>
-                        {ord.status}
+              ) : recentOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                    No orders recorded yet.
+                  </td>
+                </tr>
+              ) : (
+                recentOrders.map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 font-mono font-medium text-gray-900">
+                      #{order._id.slice(-8).toUpperCase()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-medium text-gray-900">{order.user?.name || "Customer"}</p>
+                      <p className="text-[11px] text-gray-400">{order.user?.email}</p>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500">{formatDate(order.createdAt)}</td>
+                    <td className="px-6 py-4">
+                      <span className="font-medium text-gray-700">{order.paymentMethod}</span>{" "}
+                      <span className="text-[11px] text-gray-400">({order.paymentStatus})</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge
+                        variant={
+                          order.orderStatus === "Delivered"
+                            ? "success"
+                            : order.orderStatus === "Processing"
+                            ? "info"
+                            : order.orderStatus === "Shipped"
+                            ? "purple"
+                            : "warning"
+                        }
+                      >
+                        {order.orderStatus}
                       </Badge>
                     </td>
+                    <td className="px-6 py-4 text-right font-bold text-gray-900">
+                      {formatPrice(order.totalPrice)}
+                    </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

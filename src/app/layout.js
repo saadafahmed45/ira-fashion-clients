@@ -1,15 +1,14 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/shared/Navbar";
-import { Footer } from "@/components/shared/Footer";
-import { CartDrawer } from "@/features/cart/components/CartDrawer";
+import Navbar from "@/components/common/Navbar";
+import Footer from "@/components/common/Footer";
 import Providers from "@/providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "IRA FASHION | Modern Luxury eCommerce",
-  description: "Curated luxury fashion, perfumes, and apparel designed with modern Shopify minimalist aesthetic.",
+  title: "IRA FASHION | Haute Couture & Modest Wear",
+  description: "Curated luxury modest wear, artisanal silk sarees, evening gowns, and contemporary fashion.",
 };
 
 export const viewport = {
@@ -20,13 +19,12 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-white text-[#111111] antialiased`}>
+      <body className={`${inter.className} bg-white text-gray-900 antialiased`}>
         <Providers>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">{children}</main>
             <Footer />
-            <CartDrawer />
           </div>
         </Providers>
       </body>
